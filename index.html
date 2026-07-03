@@ -4,359 +4,195 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ummi's Table — Homemade Halal Catering</title>
-<meta name="description" content="Ummi's Table is a homemade halal catering service for gatherings — made with love, seasoned with dua.">
+<meta name="description" content="Homemade halal catering for every gathering. Made from scratch. Delivered hot.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Caveat:wght@500;600;700&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --cream:#FAF4E8;
-    --cream-deep:#F1E8D6;
-    --olive:#4A4730;
-    --olive-soft:#6B6B47;
-    --sage:#8C9270;
-    --burgundy:#6E2A35;
-    --gold:#B9923F;
-    --line:rgba(74,71,48,0.18);
-  }
-  *{box-sizing:border-box; margin:0; padding:0;}
-  html{scroll-behavior:smooth;}
-  body{
-    background:var(--cream);
-    color:var(--olive);
-    font-family:'Karla', sans-serif;
-    font-size:17px;
-    line-height:1.6;
-    -webkit-font-smoothing:antialiased;
-  }
-  h1,h2,h3{
-    font-family:'Fraunces', serif;
-    font-weight:600;
-    color:var(--olive);
-    letter-spacing:-0.01em;
-  }
-  .script{
-    font-family:'Caveat', cursive;
-    color:var(--burgundy);
-    font-weight:700;
-  }
-  a{color:inherit;}
-  img{max-width:100%; display:block;}
-  .wrap{max-width:1120px; margin:0 auto; padding:0 28px;}
+:root {
+  --cream: #FAF4E8;
+  --cream-deep: #F1E8D6;
+  --olive: #3E3C28;
+  --olive-soft: #6B6B47;
+  --burgundy: #6E2A35;
+  --gold: #B9923F;
+  --line: rgba(62,60,40,0.14);
+  --r: 16px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--cream);
+  color: var(--olive);
+  font-family: 'Karla', sans-serif;
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+h1,h2,h3 { font-family: 'Fraunces', serif; font-weight: 700; color: var(--olive); line-height: 1.1; }
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+.wrap { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+.tag { display: inline-block; font-size: 0.72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--burgundy); margin-bottom: 14px; }
 
-  /* heart-steam signature divider */
-  .heart-divider{
-    display:flex; align-items:center; justify-content:center; gap:14px;
-    margin:0 auto;
-  }
-  .heart-divider .stem{height:1px; width:64px; background:var(--line);}
-  .heart-divider svg{width:18px; height:18px;}
+/* NAV */
+header { position: sticky; top: 0; z-index: 100; background: rgba(250,244,232,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+nav { display: flex; align-items: center; justify-content: space-between; padding: 13px 24px; max-width: 1100px; margin: 0 auto; gap: 16px; }
+.brand { display: flex; align-items: center; gap: 9px; font-family: 'Fraunces', serif; font-weight: 700; font-size: 1.1rem; white-space: nowrap; }
+.brand img { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; }
+nav ul { list-style: none; display: flex; gap: 24px; font-size: 0.88rem; font-weight: 600; }
+nav ul a:hover { color: var(--burgundy); }
+.nav-cta { background: var(--burgundy); color: var(--cream) !important; padding: 9px 18px; border-radius: 30px; font-weight: 700; font-size: 0.85rem; white-space: nowrap; transition: background .15s; }
+.nav-cta:hover { background: #54202a !important; }
+@media (max-width: 780px) { nav ul { display: none; } }
 
-  /* ===== NAV ===== */
-  header{
-    position:sticky; top:0; z-index:50;
-    background:rgba(250,244,232,0.92);
-    backdrop-filter:blur(8px);
-    border-bottom:1px solid var(--line);
-  }
-  nav{
-    display:flex; align-items:center; justify-content:space-between;
-    padding:14px 28px; max-width:1120px; margin:0 auto;
-  }
-  .brand{display:flex; align-items:center; gap:10px; font-family:'Fraunces',serif; font-weight:600; font-size:1.2rem;}
-  .brand img{width:38px; height:38px; border-radius:50%; border:1.5px solid var(--olive);}
-  nav ul{list-style:none; display:flex; gap:30px; font-size:0.92rem; font-weight:600;}
-  nav ul a{text-decoration:none; position:relative; padding-bottom:3px;}
-  nav ul a:hover{color:var(--burgundy);}
-  .nav-cta{
-    background:var(--burgundy); color:var(--cream); padding:9px 20px;
-    border-radius:30px; text-decoration:none; font-weight:700; font-size:0.88rem;
-    transition:transform .15s ease, background .15s ease;
-  }
-  .nav-cta:hover{background:#5a2129; transform:translateY(-1px);}
-  .menu-toggle{display:none;}
+/* HERO */
+.hero { padding: 72px 0 80px; background: radial-gradient(ellipse at 80% 0%, rgba(185,146,63,.12), transparent 55%), radial-gradient(ellipse at 10% 100%, rgba(110,42,53,.07), transparent 50%); }
+.hero-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+.hero h1 { font-size: clamp(2.6rem, 5vw, 3.8rem); margin-bottom: 16px; }
+.hero h1 em { font-style: normal; color: var(--burgundy); }
+.hero p { color: var(--olive-soft); font-size: 1.05rem; max-width: 440px; margin-bottom: 28px; }
+.btn-row { display: flex; gap: 12px; flex-wrap: wrap; }
+.btn { display: inline-block; padding: 13px 26px; border-radius: 30px; font-weight: 700; font-size: 0.9rem; transition: transform .15s, box-shadow .15s; }
+.btn-dark { background: var(--olive); color: var(--cream); }
+.btn-dark:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(62,60,40,.2); }
+.btn-outline { border: 1.5px solid var(--olive); color: var(--olive); }
+.btn-outline:hover { background: var(--cream-deep); }
+.hero-img { position: relative; display: flex; justify-content: center; }
+.hero-img img { width: min(380px, 100%); border-radius: 50%; box-shadow: 0 28px 56px -16px rgba(62,60,40,.3); }
+.hero-img::before { content: ''; position: absolute; inset: -16px; border: 1.5px dashed var(--gold); border-radius: 50%; opacity: .45; }
+.badges { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 22px; }
+.badge { font-size: 0.75rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; border: 1px solid var(--line); padding: 5px 12px; border-radius: 20px; color: var(--olive-soft); }
+@media (max-width: 720px) {
+  .hero-inner { grid-template-columns: 1fr; text-align: center; }
+  .hero p { margin-left: auto; margin-right: auto; }
+  .btn-row, .badges { justify-content: center; }
+  .hero-img { order: -1; }
+  .hero-img::before { display: none; }
+}
 
-  /* ===== HERO ===== */
-  .hero{
-    position:relative; overflow:hidden;
-    padding:64px 0 80px;
-    background:
-      radial-gradient(circle at 85% 10%, rgba(185,146,63,0.10), transparent 45%),
-      radial-gradient(circle at 10% 90%, rgba(110,42,53,0.06), transparent 45%);
-  }
-  .hero-grid{
-    display:grid; grid-template-columns:1.1fr 0.9fr; gap:56px; align-items:center;
-  }
-  .eyebrow{
-    display:inline-flex; align-items:center; gap:8px;
-    font-family:'Karla',sans-serif; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
-    font-size:0.74rem; color:var(--burgundy); margin-bottom:18px;
-  }
-  .eyebrow::before{content:"";width:22px;height:1px;background:var(--burgundy);}
-  .hero h1{font-size:clamp(2.4rem, 4.4vw, 3.6rem); line-height:1.08;}
-  .hero h1 em{font-style:normal; color:var(--burgundy);}
-  .hero p.lead{
-    margin-top:20px; font-size:1.12rem; max-width:480px; color:var(--olive-soft);
-  }
-  .hero-actions{display:flex; gap:14px; margin-top:32px; flex-wrap:wrap;}
-  .btn-primary{
-    background:var(--olive); color:var(--cream); padding:14px 28px; border-radius:32px;
-    text-decoration:none; font-weight:700; font-size:0.95rem;
-    transition:transform .15s ease, box-shadow .15s ease;
-  }
-  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 10px 20px rgba(74,71,48,0.18);}
-  .btn-secondary{
-    border:1.5px solid var(--olive); padding:13px 26px; border-radius:32px;
-    text-decoration:none; font-weight:700; font-size:0.95rem; color:var(--olive);
-    transition:background .15s ease;
-  }
-  .btn-secondary:hover{background:var(--cream-deep);}
-  .hero-tags{display:flex; gap:10px; margin-top:34px; flex-wrap:wrap;}
-  .hero-tags span{
-    font-size:0.78rem; font-weight:700; letter-spacing:.04em; text-transform:uppercase;
-    border:1px solid var(--line); padding:6px 13px; border-radius:20px; color:var(--olive-soft);
-  }
-  .hero-logo-frame{
-    position:relative; display:flex; justify-content:center; align-items:center;
-  }
-  .hero-logo-frame img{
-    width:min(420px, 100%); border-radius:50%;
-    box-shadow:0 30px 60px -20px rgba(74,71,48,0.35);
-  }
-  .hero-logo-frame::before{
-    content:""; position:absolute; inset:-18px;
-    border:1.5px dashed var(--gold); border-radius:50%; opacity:.5;
-  }
+/* SECTIONS */
+.section { padding: 80px 0; }
+.alt { background: var(--cream-deep); }
+.section-title { text-align: center; margin-bottom: 48px; }
+.section-title h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); margin-top: 6px; }
+.section-title p { color: var(--olive-soft); margin-top: 10px; max-width: 540px; margin-left: auto; margin-right: auto; font-size: 0.98rem; }
 
-  /* ===== SECTION HEADERS ===== */
-  .section{padding:84px 0;}
-  .section-head{text-align:center; max-width:620px; margin:0 auto 52px;}
-  .section-head .eyebrow{justify-content:center;}
-  .section-head .eyebrow::before{display:none;}
-  .section-head h2{font-size:clamp(1.9rem, 3vw, 2.5rem);}
-  .section-head p{margin-top:14px; color:var(--olive-soft); font-size:1.02rem;}
-  .alt-bg{background:var(--cream-deep);}
+/* STORY STRIP */
+.story-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+.story-cell { background: var(--cream); padding: 32px 28px; }
+.story-cell .num { font-family: 'Fraunces', serif; font-size: 2rem; font-weight: 700; color: var(--burgundy); line-height: 1; margin-bottom: 8px; }
+.story-cell h3 { font-size: 1rem; margin-bottom: 6px; }
+.story-cell p { color: var(--olive-soft); font-size: 0.88rem; }
+@media (max-width: 640px) { .story-strip { grid-template-columns: 1fr; } }
 
-  /* ===== STORY ===== */
-  .story{display:grid; grid-template-columns:0.85fr 1.15fr; gap:60px; align-items:center;}
-  .story-art{
-    background:var(--olive); border-radius:18px; padding:34px; color:var(--cream);
-    position:relative; min-height:300px; display:flex; flex-direction:column; justify-content:center;
-  }
-  .story-art .script{font-size:2.4rem; line-height:1.2; color:var(--cream); display:block;}
-  .story-art p{margin-top:14px; color:rgba(250,244,232,0.78); font-size:0.95rem;}
-  .story h2{font-size:clamp(1.8rem,2.8vw,2.3rem); margin-bottom:18px;}
-  .story p{color:var(--olive-soft); margin-bottom:16px;}
-  .story-quote{
-    border-left:3px solid var(--burgundy); padding-left:18px; margin-top:24px;
-    font-family:'Fraunces',serif; font-style:italic; font-size:1.15rem; color:var(--olive);
-  }
+/* MENU TABS */
+.menu-tabs { display: flex; justify-content: center; gap: 8px; margin-bottom: 36px; flex-wrap: wrap; }
+.tab-btn { padding: 10px 22px; border-radius: 30px; font-weight: 700; font-size: 0.88rem; border: 1.5px solid var(--line); background: var(--cream); color: var(--olive-soft); cursor: pointer; transition: all .15s; font-family: 'Karla', sans-serif; }
+.tab-btn.active, .tab-btn:hover { background: var(--olive); color: var(--cream); border-color: var(--olive); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
 
-  /* ===== MENU / SERVICES ===== */
-  .menu-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:26px;}
-  .menu-card{
-    background:var(--cream); border:1px solid var(--line); border-radius:16px;
-    padding:32px 28px; transition:transform .2s ease, box-shadow .2s ease;
-  }
-  .menu-card:hover{transform:translateY(-5px); box-shadow:0 20px 36px -22px rgba(74,71,48,0.3);}
-  .menu-card .icon{
-    width:46px; height:46px; border-radius:50%; background:var(--cream-deep);
-    display:flex; align-items:center; justify-content:center; margin-bottom:18px;
-    font-size:1.3rem;
-  }
-  .menu-card h3{font-size:1.25rem; margin-bottom:10px;}
-  .menu-card p{color:var(--olive-soft); font-size:0.95rem;}
-  .menu-card ul{margin-top:14px; padding-left:18px; color:var(--olive-soft); font-size:0.9rem;}
-  .menu-card ul li{margin-bottom:4px;}
+/* PACKAGE CARDS */
+.pkg-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.pkg-card { background: var(--cream); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; display: flex; flex-direction: column; transition: transform .2s, box-shadow .2s; }
+.pkg-card:hover { transform: translateY(-4px); box-shadow: 0 16px 32px -16px rgba(62,60,40,.25); }
+.pkg-head { background: var(--olive); color: var(--cream); padding: 24px; }
+.pkg-letter { font-family: 'Fraunces', serif; font-size: 2.4rem; font-weight: 700; line-height: 1; }
+.pkg-name { font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--gold); margin-top: 4px; }
+.pkg-body { padding: 24px; flex: 1; display: flex; flex-direction: column; gap: 14px; }
+.pkg-row { display: flex; align-items: flex-start; gap: 12px; }
+.pkg-row .dot { width: 26px; height: 26px; border-radius: 50%; background: var(--cream-deep); display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-weight: 700; font-size: 0.85rem; color: var(--burgundy); flex-shrink: 0; margin-top: 2px; }
+.pkg-row .text strong { display: block; font-size: 0.9rem; }
+.pkg-row .text span { font-size: 0.8rem; color: var(--olive-soft); }
+.pkg-cta { margin-top: auto; display: block; text-align: center; border: 1.5px solid var(--olive); border-radius: 30px; padding: 10px; font-weight: 700; font-size: 0.85rem; color: var(--olive); transition: background .15s; }
+.pkg-cta:hover { background: var(--cream-deep); }
+@media (max-width: 720px) { .pkg-grid { grid-template-columns: 1fr; } }
 
-  /* ===== PACKAGE OPTIONS (A/B/C) ===== */
-  .package-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:26px;}
-  .package-card{
-    background:var(--cream); border:1px solid var(--line); border-radius:18px;
-    padding:0; overflow:hidden; display:flex; flex-direction:column;
-    transition:transform .2s ease, box-shadow .2s ease;
-  }
-  .package-card:hover{transform:translateY(-5px); box-shadow:0 20px 36px -22px rgba(74,71,48,0.3);}
-  .package-card .package-head{
-    background:var(--olive); color:var(--cream); padding:26px 28px 22px;
-  }
-  .package-card .package-letter{
-    font-family:'Fraunces',serif; font-size:2.2rem; font-weight:700; line-height:1;
-  }
-  .package-card .package-name{font-size:0.92rem; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--gold); margin-top:6px;}
-  .package-card .package-per{font-size:0.82rem; color:rgba(250,244,232,0.7); margin-top:8px;}
-  .package-card .package-body{padding:26px 28px 30px; flex:1; display:flex; flex-direction:column;}
-  .package-body .count-list{list-style:none; display:flex; flex-direction:column; gap:14px; margin-bottom:24px;}
-  .package-body .count-list li{
-    display:flex; align-items:baseline; gap:10px; font-size:0.95rem; color:var(--olive);
-  }
-  .package-body .count-list .num{
-    font-family:'Fraunces',serif; font-weight:700; color:var(--burgundy); font-size:1.1rem; min-width:18px;
-  }
-  .package-body .count-list .label-sub{display:block; font-size:0.8rem; color:var(--olive-soft); font-weight:400;}
-  .package-card .package-cta{
-    margin-top:auto; display:inline-block; text-align:center; text-decoration:none;
-    border:1.5px solid var(--olive); border-radius:30px; padding:11px; font-weight:700;
-    font-size:0.88rem; color:var(--olive); transition:background .15s ease;
-  }
-  .package-card .package-cta:hover{background:var(--cream-deep);}
+/* DISH GRID */
+.dish-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 8px; }
+.dish-col { background: var(--cream); border: 1px solid var(--line); border-radius: var(--r); padding: 22px; }
+.dish-col h4 { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--burgundy); margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+.dish-col li { list-style: none; font-size: 0.86rem; color: var(--olive-soft); padding: 7px 0; border-bottom: 1px solid var(--line); }
+.dish-col li:last-child { border-bottom: none; }
+@media (max-width: 780px) { .dish-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 480px) { .dish-grid { grid-template-columns: 1fr; } }
 
-  .choices-block{margin-top:60px;}
-  .choices-grid{display:grid; grid-template-columns:repeat(4, 1fr); gap:22px;}
-  .choice-col h4{
-    font-family:'Karla',sans-serif; font-weight:700; font-size:0.78rem; text-transform:uppercase;
-    letter-spacing:.06em; color:var(--burgundy); margin-bottom:12px;
-  }
-  .choice-col ul{list-style:none; display:flex; flex-direction:column; gap:8px;}
-  .choice-col ul li{
-    font-size:0.88rem; color:var(--olive-soft); padding-bottom:8px; border-bottom:1px solid var(--line);
-  }
+/* GALLERY */
+.gallery-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.g-slot { border-radius: var(--r); overflow: hidden; background: var(--cream-deep); border: 2px dashed var(--gold); display: flex; align-items: center; justify-content: center; text-align: center; aspect-ratio: 1/1; }
+.g-slot.big { grid-column: span 2; grid-row: span 2; aspect-ratio: auto; min-height: 280px; }
+.g-slot img { width: 100%; height: 100%; object-fit: cover; }
+.g-label { padding: 16px; }
+.g-label strong { display: block; font-family: 'Fraunces', serif; color: var(--burgundy); font-size: 1.1rem; margin-bottom: 4px; }
+.g-label span { font-size: 0.8rem; color: var(--olive-soft); }
+@media (max-width: 640px) { .gallery-grid { grid-template-columns: 1fr 1fr; } .g-slot.big { grid-column: span 2; grid-row: span 1; } }
 
-  @media (max-width:880px){
-    .package-grid{grid-template-columns:1fr;}
-    .choices-grid{grid-template-columns:1fr 1fr;}
-  }
-  @media (max-width:560px){
-    .choices-grid{grid-template-columns:1fr;}
-  }
+/* OCCASIONS */
+.occ-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.occ-pill { font-family: 'Fraunces', serif; font-size: 0.95rem; border: 1px solid var(--line); border-radius: 30px; padding: 10px 20px; background: var(--cream); }
 
-  /* ===== GALLERY ===== */
-  .gallery-grid{
-    display:grid; grid-template-columns:repeat(4, 1fr); gap:18px;
-  }
-  .gallery-grid .span-2{grid-column:span 2; grid-row:span 2;}
-  .gallery-slot{
-    position:relative; aspect-ratio:1/1; border-radius:14px; overflow:hidden;
-    background:var(--cream-deep);
-    border:2px dashed var(--gold);
-    display:flex; align-items:center; justify-content:center;
-    text-align:center;
-  }
-  .gallery-slot.span-2{aspect-ratio:auto;}
-  .gallery-slot img{width:100%; height:100%; object-fit:cover; display:block;}
-  .gallery-slot .placeholder-label{
-    padding:18px; color:var(--olive-soft); font-size:0.85rem; line-height:1.5;
-  }
-  .gallery-slot .placeholder-label strong{
-    display:block; color:var(--burgundy); font-family:'Fraunces',serif; font-size:1.5rem; margin-bottom:6px;
-  }
-  .gallery-note{
-    text-align:center; margin-top:30px; font-size:0.88rem; color:var(--olive-soft);
-    background:var(--cream-deep); border-radius:12px; padding:16px 24px; max-width:640px; margin-left:auto; margin-right:auto;
-  }
-  .gallery-note code{
-    background:var(--cream); border:1px solid var(--line); padding:2px 7px; border-radius:6px; font-size:0.82rem;
-  }
-  @media (max-width:880px){
-    .gallery-grid{grid-template-columns:repeat(2,1fr);}
-    .gallery-grid .span-2{grid-column:span 2; grid-row:span 1;}
-  }
+/* HOW IT WORKS */
+.steps { display: grid; grid-template-columns: repeat(4,1fr); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+.step { padding: 32px 24px; border-right: 1px solid var(--line); }
+.step:last-child { border-right: none; }
+.step-n { font-family: 'Fraunces', serif; font-size: 2rem; font-weight: 700; color: var(--burgundy); margin-bottom: 8px; }
+.step h3 { font-size: 1rem; margin-bottom: 6px; }
+.step p { font-size: 0.86rem; color: var(--olive-soft); }
+@media (max-width: 640px) { .steps { grid-template-columns: 1fr 1fr; } .step { border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); } .step:nth-child(2n) { border-right: none; } }
 
-  .occasions{
-    display:flex; flex-wrap:wrap; justify-content:center; gap:14px;
-  }
-  .occasions span{
-    font-family:'Fraunces',serif; font-size:1.05rem; font-weight:500;
-    border:1px solid var(--line); border-radius:30px; padding:12px 24px;
-    background:var(--cream);
-  }
+/* REVIEWS */
+.reviews { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
+.r-card { background: var(--cream); border: 1px solid var(--line); border-radius: var(--r); padding: 26px; }
+.r-card p { font-family: 'Fraunces', serif; font-style: italic; font-size: 1rem; color: var(--olive); }
+.r-who { margin-top: 14px; font-size: 0.82rem; font-weight: 700; color: var(--burgundy); }
+@media (max-width: 640px) { .reviews { grid-template-columns: 1fr; } }
 
-  /* ===== PROCESS ===== */
-  .process{
-    display:grid; grid-template-columns:repeat(4,1fr); gap:0;
-    border-top:1px solid var(--line); border-bottom:1px solid var(--line);
-  }
-  .process-step{
-    padding:36px 26px; border-right:1px solid var(--line); position:relative;
-  }
-  .process-step:last-child{border-right:none;}
-  .process-step .label{
-    font-family:'Caveat',cursive; color:var(--burgundy); font-size:1.4rem; font-weight:700;
-  }
-  .process-step h3{font-size:1.08rem; margin:6px 0 8px;}
-  .process-step p{color:var(--olive-soft); font-size:0.9rem;}
+/* CONTACT */
+.contact-band { background: var(--olive); border-radius: 20px; padding: 64px 48px; text-align: center; }
+.contact-band h2 { color: var(--cream); font-size: clamp(1.9rem, 3vw, 2.8rem); margin-bottom: 14px; }
+.contact-band > p { color: rgba(250,244,232,.75); font-size: 1rem; max-width: 480px; margin: 0 auto 32px; }
+.contact-info { display: flex; justify-content: center; gap: 28px; flex-wrap: wrap; margin-bottom: 36px; }
+.contact-info a { color: var(--cream); font-weight: 600; font-size: 0.92rem; display: inline-flex; align-items: center; gap: 8px; opacity: .8; }
+.contact-info a:hover { opacity: 1; }
+.big-form-btn {
+  display: inline-block; background: var(--cream); color: var(--olive) !important;
+  font-family: 'Fraunces', serif; font-weight: 700; font-size: 1.25rem;
+  padding: 20px 52px; border-radius: 60px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  transition: transform .15s, box-shadow .15s;
+  letter-spacing: -.01em;
+}
+.big-form-btn:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(0,0,0,0.24); }
+.big-form-btn span { display: block; font-family: 'Karla', sans-serif; font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: .1em; color: var(--burgundy); margin-bottom: 4px; }
+@media (max-width: 720px) { .contact-band { padding: 44px 24px; } .contact-info { flex-direction: column; align-items: center; gap: 12px; } }
 
-  /* ===== TESTIMONIALS ===== */
-  .testimonials{display:grid; grid-template-columns:repeat(3,1fr); gap:24px;}
-  .t-card{
-    background:var(--cream); border-radius:16px; padding:28px; border:1px solid var(--line);
-  }
-  .t-card p{font-family:'Fraunces',serif; font-style:italic; color:var(--olive); font-size:1.02rem;}
-  .t-card .who{margin-top:16px; font-family:'Karla',sans-serif; font-weight:700; font-size:0.85rem; color:var(--burgundy);}
+/* FOOTER */
+footer { padding: 44px 0 24px; border-top: 1px solid var(--line); }
+.footer-inner { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 24px; }
+.footer-brand { display: flex; align-items: center; gap: 9px; font-family: 'Fraunces', serif; font-weight: 700; }
+.footer-brand img { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; }
+.footer-tagline { color: var(--olive-soft); font-size: 0.82rem; margin-top: 5px; }
+.footer-cols { display: flex; gap: 36px; }
+.footer-col h5 { font-family: 'Karla', sans-serif; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--burgundy); margin-bottom: 10px; }
+.footer-col a { display: block; color: var(--olive-soft); font-size: 0.86rem; margin-bottom: 6px; }
+.footer-col a:hover { color: var(--olive); }
+.footer-bottom { margin-top: 32px; padding-top: 18px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; font-size: 0.78rem; color: var(--olive-soft); }
 
-  /* ===== CTA / CONTACT ===== */
-  .cta-band{
-    background:var(--olive); color:var(--cream); border-radius:22px;
-    padding:56px 48px; display:grid; grid-template-columns:1.3fr 1fr; gap:40px; align-items:center;
-  }
-  .cta-band h2{color:var(--cream); font-size:clamp(1.7rem,2.6vw,2.2rem);}
-  .cta-band p{color:rgba(250,244,232,0.78); margin-top:12px; max-width:420px;}
-  .cta-form{
-    background:var(--cream); border-radius:16px; padding:26px; display:flex; flex-direction:column; gap:12px;
-  }
-  .cta-form input, .cta-form select, .cta-form textarea{
-    border:1px solid var(--line); border-radius:10px; padding:12px 14px;
-    font-family:'Karla',sans-serif; font-size:0.92rem; background:var(--cream); color:var(--olive);
-  }
-  .cta-form textarea{resize:vertical; min-height:70px;}
-  .cta-form button{
-    background:var(--burgundy); color:var(--cream); border:none; border-radius:30px;
-    padding:13px; font-weight:700; font-size:0.95rem; cursor:pointer; transition:background .15s ease;
-  }
-  .cta-form button:hover{background:#5a2129;}
-
-  /* ===== FOOTER ===== */
-  footer{padding:48px 0 30px; border-top:1px solid var(--line);}
-  .footer-grid{display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:24px;}
-  .footer-brand{display:flex; align-items:center; gap:10px;}
-  .footer-brand img{width:34px; height:34px; border-radius:50%; border:1px solid var(--olive);}
-  .footer-brand span{font-family:'Fraunces',serif; font-weight:600;}
-  footer .tagline{color:var(--olive-soft); font-size:0.88rem; margin-top:6px;}
-  .footer-links{display:flex; gap:34px; font-size:0.88rem;}
-  .footer-links div h4{font-family:'Karla',sans-serif; font-weight:700; margin-bottom:10px; font-size:0.82rem; text-transform:uppercase; letter-spacing:.06em; color:var(--burgundy);}
-  .footer-links a{display:block; color:var(--olive-soft); text-decoration:none; margin-bottom:7px;}
-  .footer-links a:hover{color:var(--olive);}
-  .footer-bottom{margin-top:36px; padding-top:20px; border-top:1px solid var(--line); display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; font-size:0.8rem; color:var(--olive-soft);}
-
-  /* ===== RESPONSIVE ===== */
-  @media (max-width:880px){
-    nav ul{display:none;}
-    .menu-toggle{
-      display:block; background:none; border:1.5px solid var(--olive); border-radius:8px;
-      width:38px; height:38px; font-size:1.1rem; cursor:pointer; color:var(--olive);
-    }
-    .hero-grid{grid-template-columns:1fr; text-align:center;}
-    .hero-actions, .hero-tags{justify-content:center;}
-    .hero p.lead{margin-left:auto; margin-right:auto;}
-    .story{grid-template-columns:1fr;}
-    .menu-grid{grid-template-columns:1fr 1fr;}
-    .process{grid-template-columns:1fr 1fr;}
-    .process-step{border-right:1px solid var(--line); border-bottom:1px solid var(--line);}
-    .testimonials{grid-template-columns:1fr;}
-    .cta-band{grid-template-columns:1fr; padding:36px 26px;}
-  }
-  @media (max-width:560px){
-    .menu-grid{grid-template-columns:1fr;}
-    .process{grid-template-columns:1fr;}
-    .footer-grid{flex-direction:column;}
-  }
-
-  /* focus visibility */
-  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible{
-    outline:2px solid var(--burgundy); outline-offset:2px;
-  }
-  @media (prefers-reduced-motion: reduce){
-    *{transition:none !important; scroll-behavior:auto !important;}
-  }
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 2px solid var(--burgundy); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
 </style>
 </head>
 <body>
 
+<!-- NAV -->
 <header>
   <nav>
-    <div class="brand"><img src="https://raw.githubusercontent.com/ummistable/ummistable.github.io/refs/heads/main/ummistablelogo.PNG" alt="Ummi's Table logo"> Ummi's Table</div>
+    <div class="brand">
+      <img src="https://raw.githubusercontent.com/ummistable/ummistable.github.io/refs/heads/main/ummistablelogo.PNG" alt="Ummi's Table">
+      Ummi's Table
+    </div>
     <ul>
-      <li><a href="#story">Our Story</a></li>
       <li><a href="#menu">Menu</a></li>
       <li><a href="#gallery">Gallery</a></li>
       <li><a href="#occasions">Occasions</a></li>
@@ -366,348 +202,303 @@
   </nav>
 </header>
 
+<!-- HERO -->
 <section class="hero">
-  <div class="wrap hero-grid">
+  <div class="wrap hero-inner">
     <div>
-      <div class="eyebrow">Homemade &middot; Halal &middot; Made with Love</div>
-      <h1>Gatherings taste better<br>around <em>Ummi's</em> table.</h1>
-      <p class="lead">Slow-simmered, scratch-made dishes — built from whole ingredients, not shortcuts — catered for weddings, birthdays, office events, and family milestones. Everyone's welcome at the table.</p>
-      <div class="hero-actions">
-        <a href="https://forms.gle/REPLACE_WITH_YOUR_FORM_LINK" target="_blank" rel="noopener" class="btn-primary">Request Catering — Google Form</a>
-        <a href="#menu" class="btn-secondary">View the Menu</a>
+      <div class="tag">Homemade · Halal · Made with Love</div>
+      <h1>Real food.<br>Every <em>gathering.</em></h1>
+      <p>Scratch-made halal catering — whole ingredients, no shortcuts — delivered hot to your event.</p>
+      <div class="btn-row">
+        <a href="https://forms.gle/REPLACE_WITH_YOUR_FORM_LINK" target="_blank" rel="noopener" class="btn btn-dark">Request Catering</a>
+        <a href="#menu" class="btn btn-outline">See the Menu</a>
       </div>
-      <div class="hero-tags">
-        <span>100% Halal</span>
-        <span>Made From Scratch</span>
-        <span>Delivered Hot</span>
-        <span>Custom Menus</span>
+      <div class="badges">
+        <span class="badge">100% Halal</span>
+        <span class="badge">From Scratch</span>
+        <span class="badge">Delivered Hot</span>
+        <span class="badge">Custom Menus</span>
       </div>
     </div>
-    <div class="hero-logo-frame">
-      <img src="https://raw.githubusercontent.com/ummistable/ummistable.github.io/refs/heads/main/ummistablelogo.PNG" alt="Ummi's Table — illustration of a grandmother cooking, surrounded by an olive branch and lantern">
+    <div class="hero-img">
+      <img src="https://raw.githubusercontent.com/ummistable/ummistable.github.io/refs/heads/main/ummistablelogo.PNG" alt="Ummi's Table — a grandmother stirring a pot with care">
     </div>
   </div>
 </section>
 
-<section class="section" id="story">
-  <div class="wrap story">
-    <div class="story-art">
-      <span class="script">"Eat well, beloved."</span>
-      <p>It's what Ummi says before every meal leaves her kitchen — and the spirit behind every tray we send out.</p>
-    </div>
-    <div>
-      <div class="eyebrow">Our Story</div>
-      <h2>Started in one kitchen. Cooked for every table since.</h2>
-      <p>Ummi's Table began the way most good food does — with one woman, one stove, and a habit of cooking enough for twenty even when only five were coming. Neighbors started asking for trays. Then it was weddings. Then offices. Then birthdays.</p>
-      <p>We still cook the way she taught us: whole ingredients, real spices toasted by hand, rice that rests before it's served, and nothing rushed or processed. Every order is prepared fresh for your date — halal, but built to be enjoyed by any guest at any table.</p>
-      <p class="story-quote">Made with love. Seasoned with dua.</p>
-    </div>
-  </div>
-</section>
-
-<section class="section alt-bg" id="menu">
+<!-- STORY -->
+<section class="section">
   <div class="wrap">
-    <div class="section-head">
-      <div class="eyebrow">Catering Packages</div>
-      <h2>Three ways to set the table</h2>
-      <p>Every option is priced and portioned per person, made from whole, halal ingredients with no shortcuts — lean cuts, fresh produce, and sauces built from scratch. Soft drinks, soda, and water included with every package.</p>
+    <div class="section-title">
+      <div class="tag">Why Ummi's Table</div>
+      <h2>Food that means something.</h2>
     </div>
-    <div class="package-grid">
-      <div class="package-card">
-        <div class="package-head">
-          <div class="package-letter">A</div>
-          <div class="package-name">The Full Table</div>
-          <div class="package-per">Per person</div>
-        </div>
-        <div class="package-body">
-          <ul class="count-list">
-            <li><span class="num">2</span><span>Entrées<span class="label-sub">choice of two signature mains</span></span></li>
-            <li><span class="num">1</span><span>Side<span class="label-sub">bread, rice, or vegetables</span></span></li>
-            <li><span class="num">1</span><span>Dessert<span class="label-sub">sweet bread, cake, or baklava</span></span></li>
-            <li><span class="num">1</span><span>Fruit<span class="label-sub">fresh seasonal fruit</span></span></li>
-          </ul>
-          <a href="https://forms.gle/REPLACE_WITH_YOUR_FORM_LINK" target="_blank" rel="noopener" class="package-cta">Request Option A</a>
-        </div>
+    <div class="story-strip">
+      <div class="story-cell">
+        <div class="num">01</div>
+        <h3>One kitchen. One standard.</h3>
+        <p>Everything made fresh for your event date — never reheated, never frozen.</p>
       </div>
-      <div class="package-card">
-        <div class="package-head">
-          <div class="package-letter">B</div>
-          <div class="package-name">The Family Plate</div>
-          <div class="package-per">Per person</div>
-        </div>
-        <div class="package-body">
-          <ul class="count-list">
-            <li><span class="num">1</span><span>Entrée<span class="label-sub">choice of one signature main</span></span></li>
-            <li><span class="num">1</span><span>Side<span class="label-sub">bread, rice, or vegetables</span></span></li>
-            <li><span class="num">1</span><span>Fruit<span class="label-sub">fresh seasonal fruit</span></span></li>
-            <li><span class="num">1</span><span>Dessert<span class="label-sub">sweet bread, cake, or baklava</span></span></li>
-          </ul>
-          <a href="https://forms.gle/REPLACE_WITH_YOUR_FORM_LINK" target="_blank" rel="noopener" class="package-cta">Request Option B</a>
-        </div>
+      <div class="story-cell">
+        <div class="num">02</div>
+        <h3>Whole ingredients only.</h3>
+        <p>Lean cuts, real spices, sauces built from scratch — not from a can.</p>
       </div>
-      <div class="package-card">
-        <div class="package-head">
-          <div class="package-letter">C</div>
-          <div class="package-name">The Simple Plate</div>
-          <div class="package-per">Per person</div>
+      <div class="story-cell">
+        <div class="num">03</div>
+        <h3>Everyone's welcome.</h3>
+        <p>Halal, cooked for every guest at every table — no exceptions.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section class="section alt" id="menu">
+  <div class="wrap">
+    <div class="section-title">
+      <div class="tag">Catering Packages</div>
+      <h2>Pick your package.</h2>
+      <p>Priced per person. Soft drinks, soda & water included with every option.</p>
+    </div>
+
+    <div class="menu-tabs" role="tablist">
+      <button class="tab-btn active" onclick="switchTab('packages', this)" role="tab">Packages A · B · C</button>
+      <button class="tab-btn" onclick="switchTab('dishes', this)" role="tab">Dish Choices</button>
+    </div>
+
+    <div class="tab-panel active" id="tab-packages">
+      <div class="pkg-grid">
+        <div class="pkg-card">
+          <div class="pkg-head">
+            <div class="pkg-letter">A</div>
+            <div class="pkg-name">The Full Table</div>
+          </div>
+          <div class="pkg-body">
+            <div class="pkg-row"><div class="dot">2</div><div class="text"><strong>Entrées</strong><span>Two signature mains</span></div></div>
+            <div class="pkg-row"><div class="dot">1</div><div class="text"><strong>Side</strong><span>Bread, rice, or vegetables</span></div></div>
+            <div class="pkg-row"><div class="dot">1</div><div class="text"><strong>Fruit</strong><span>Fresh seasonal fruit</span></div></div>
+            <div class="pkg-row"><div class="dot">1</div><div class="text"><strong>Dessert</strong><span>Sweet bread, cake, or rice pudding</span></div></div>
+            <a href="https://forms.gle/REPLACE_WITH_YOUR_FORM_LINK" target="_blank" rel="noopener" class="pkg-cta">Request Option A</a>
+          </div>
         </div>
-        <div class="package-body">
-          <ul class="count-list">
-            <li><span class="num">1</span><span>Entrée<span class="label-sub">choice of one signature main</span></span></li>
-            <li><span class="num">1</span><span>Side<span class="label-sub">bread, rice, or vegetables</span></span></li>
-            <li><span class="num">1</span><span>Dessert<span class="label-sub">sweet bread, cake, or baklava</span></span></li>
-          </ul>
-          <a href="https://forms.gle/REPLACE_WITH_YOUR_FORM_LINK" target="_blank" rel="noopener" class="package-cta">Request Option C</a>
+        <div class="pkg-card">
+          <div class="pkg-head">
+            <div class="pkg-letter">B</div>
+            <div class="pkg-name">The Family Plate</div>
+          </div>
+          <div class="pkg-body">
+            <div class="pkg-row"><div class="dot">1</div><div class="text"><strong>Entrée</strong><span>One signature main</span></div></div>
+            <div class="pkg-row"><div class="dot">1</div><div class="text"><strong>Side</strong><span>Bread, rice, or vegetables</span></div></div>
+            <div class="pkg-row"><div class="dot">1</div><div class="text"><strong>Fruit</strong><span>Fresh seasonal fruit</span></div></div>
+            <div class="pkg-row"><div class="dot">1</div><div class="text"><strong>Dessert</strong><span>Sweet bread, cake, or rice pudding</span></div></div>
+            <a href="https://forms.gle/REPLACE_WITH_YOUR_FORM_LINK" target="_blank" rel="noopener" class="pkg-cta">Request Option B</a>
+          </div>
+        </div>
+        <div class="pkg-card">
+          <div class="pkg-head">
+            <div class="pkg-letter">C</div>
+            <div class="pkg-name">The Simple Plate</div>
+          </div>
+          <div class="pkg-body">
+            <div class="pkg-row"><div class="dot">1</div><div class="text"><strong>Entrée</strong><span>One signature main</span></div></div>
+            <div class="pkg-row"><div class="dot">1</div><div class="text"><strong>Side</strong><span>Bread, rice, or vegetables</span></div></div>
+            <div class="pkg-row"><div class="dot">1</div><div class="text"><strong>Dessert</strong><span>Sweet bread, cake, or rice pudding</span></div></div>
+            <a href="https://forms.gle/REPLACE_WITH_YOUR_FORM_LINK" target="_blank" rel="noopener" class="pkg-cta">Request Option C</a>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="choices-block">
-      <div class="section-head" style="margin-bottom:36px;">
-        <div class="eyebrow">Choose Your Dishes</div>
-        <h2 style="font-size:1.6rem;">Mix and match within any option</h2>
-      </div>
-      <div class="choices-grid">
-        <div class="choice-col">
-          <h4>Entrées</h4>
+    <div class="tab-panel" id="tab-dishes">
+      <div class="dish-grid">
+        <div class="dish-col">
+          <h4>🍛 Entrées</h4>
           <ul>
-            <li>Boneless, skinless sautéed chicken thighs over long grain rice, topped with choice of barberries, raisins, carrots, almonds, or pistachios</li>
+            <li>Boneless, skinless sautéed chicken thighs over long grain rice — topped with barberries, raisins, carrots, almonds, or pistachios</li>
             <li>Slow-cooked braised lamb shank with rice palow</li>
             <li>Beef stew with Eastern diamond rice</li>
             <li>Bone-in goat stew with extra long grain rice</li>
           </ul>
         </div>
-        <div class="choice-col">
-          <h4>Sides</h4>
+        <div class="dish-col">
+          <h4>🥗 Sides</h4>
           <ul>
-            <li>Afghan bread, choice of white or brown</li>
+            <li>Afghan bread — white or brown</li>
             <li>Saffron rice</li>
-            <li>Mixed vegetables with garbanzo beans, corn, and cherry tomatoes</li>
+            <li>Mixed vegetables with garbanzo beans, corn & cherry tomatoes</li>
             <li>House hot sauce</li>
           </ul>
         </div>
-        <div class="choice-col">
-          <h4>Fruit</h4>
+        <div class="dish-col">
+          <h4>🍓 Fruit</h4>
           <ul>
-            <li>Fresh seasonal fruit platter</li>
-            <li>Melon, grapes &amp; berries</li>
+            <li>Seasonal fruit platter</li>
+            <li>Melon, grapes & berries</li>
             <li>Citrus selection</li>
           </ul>
         </div>
-        <div class="choice-col">
-          <h4>Desserts</h4>
+        <div class="dish-col">
+          <h4>🍮 Desserts</h4>
           <ul>
             <li>Afghan sweet bread (Roht)</li>
             <li>Cake</li>
-            <li>Baklava</li>
+            <li>Rice Pudding topped with Pistachio Powder</li>
           </ul>
         </div>
       </div>
     </div>
-
-    <div class="occasions" style="margin-top:50px;">
-      <span>🌾 Whole grains, not white starch fillers</span>
-      <span>🍗 Lean cuts, trimmed by hand</span>
-      <span>🥦 Fresh vegetables daily</span>
-      <span>🧂 No artificial preservatives</span>
-    </div>
   </div>
 </section>
 
+<!-- GALLERY -->
 <section class="section" id="gallery">
   <div class="wrap">
-    <div class="section-head">
-      <div class="eyebrow">From Past Events</div>
-      <h2>A few tables we've set</h2>
-      <p>Real spreads from real gatherings we've catered. Swap each placeholder below with your own event photos.</p>
+    <div class="section-title">
+      <div class="tag">Past Events</div>
+      <h2>Tables we've set.</h2>
+      <p>Replace each slot with your own event photos — just upload to GitHub and update the src.</p>
     </div>
     <div class="gallery-grid">
-      <!-- GALLERY IMAGE SLOTS — replace src with your photo, e.g. images/gallery/wedding-1.jpg -->
-      <div class="gallery-slot span-2">
-        <!-- <img src="images/gallery/event-1.jpg" alt="Catered wedding spread"> -->
-        <div class="placeholder-label"><strong>📸 Upload Here</strong>Wedding / large event spread<br><span style="font-size:0.78rem;">Recommended: wide landscape photo</span></div>
+      <div class="g-slot big">
+        <!-- Uncomment and update src to add photo: <img src="event-1.jpg" alt="Wedding spread"> -->
+        <div class="g-label"><strong>📸 Photo 1</strong><span>Best wide shot<br>e.g. full event spread</span></div>
       </div>
-      <div class="gallery-slot">
-        <!-- <img src="images/gallery/event-2.jpg" alt="Catered birthday plate"> -->
-        <div class="placeholder-label"><strong>📸 Upload Here</strong>Plated dish close-up</div>
+      <div class="g-slot">
+        <!-- <img src="event-2.jpg" alt="Plated dish"> -->
+        <div class="g-label"><strong>📸 Photo 2</strong><span>Dish close-up</span></div>
       </div>
-      <div class="gallery-slot">
-        <!-- <img src="images/gallery/event-3.jpg" alt="Catering setup"> -->
-        <div class="placeholder-label"><strong>📸 Upload Here</strong>Buffet / setup shot</div>
+      <div class="g-slot">
+        <!-- <img src="event-3.jpg" alt="Buffet setup"> -->
+        <div class="g-label"><strong>📸 Photo 3</strong><span>Buffet setup</span></div>
       </div>
-      <div class="gallery-slot">
-        <!-- <img src="images/gallery/event-4.jpg" alt="Catered office event"> -->
-        <div class="placeholder-label"><strong>📸 Upload Here</strong>Corporate event</div>
+      <div class="g-slot">
+        <!-- <img src="event-4.jpg" alt="Corporate event"> -->
+        <div class="g-label"><strong>📸 Photo 4</strong><span>Corporate event</span></div>
       </div>
-      <div class="gallery-slot">
-        <!-- <img src="images/gallery/event-5.jpg" alt="Catered dessert table"> -->
-        <div class="placeholder-label"><strong>📸 Upload Here</strong>Dessert table</div>
+      <div class="g-slot">
+        <!-- <img src="event-5.jpg" alt="Dessert table"> -->
+        <div class="g-label"><strong>📸 Photo 5</strong><span>Dessert table</span></div>
       </div>
     </div>
-    <p class="gallery-note">
-      To add your own photos: drop image files into an <code>images/gallery/</code> folder next to <code>index.html</code>, then in the HTML uncomment the <code>&lt;img&gt;</code> tag in each slot and update its <code>src</code> path. Delete the placeholder <code>&lt;div class="placeholder-label"&gt;</code> below it once the photo is in place.
-    </p>
   </div>
 </section>
 
-<section class="section alt-bg" id="occasions">
+<!-- OCCASIONS -->
+<section class="section alt" id="occasions">
   <div class="wrap">
-    <div class="section-head">
-      <div class="eyebrow">Who We Cater For</div>
-      <h2>Every gathering deserves a full table</h2>
+    <div class="section-title">
+      <div class="tag">Who We Feed</div>
+      <h2>Every gathering welcome.</h2>
     </div>
-    <div class="occasions">
-      <span>Weddings &amp; Receptions</span>
-      <span>Birthdays</span>
-      <span>Office &amp; Corporate Events</span>
-      <span>Holiday Gatherings</span>
-      <span>Family Reunions</span>
-      <span>Community &amp; Religious Events</span>
-      <span>Graduations</span>
-    </div>
-  </div>
-</section>
-
-<section class="wrap">
-  <div class="process">
-    <div class="process-step">
-      <div class="label">first</div>
-      <h3>Tell us your date</h3>
-      <p>Share your headcount, occasion, and any dietary notes through our quick form.</p>
-    </div>
-    <div class="process-step">
-      <div class="label">then</div>
-      <h3>Build your menu</h3>
-      <p>We'll walk through mains, sides, and sweets together until it feels right.</p>
-    </div>
-    <div class="process-step">
-      <div class="label">next</div>
-      <h3>We cook, fresh</h3>
-      <p>Everything is prepared the day of your event — nothing pre-made or frozen.</p>
-    </div>
-    <div class="process-step">
-      <div class="label">finally</div>
-      <h3>Hot &amp; on time</h3>
-      <p>Delivered and set up so all you have to do is welcome your guests.</p>
+    <div class="occ-grid">
+      <span class="occ-pill">Weddings & Receptions</span>
+      <span class="occ-pill">Birthdays</span>
+      <span class="occ-pill">Office & Corporate Events</span>
+      <span class="occ-pill">Holiday Gatherings</span>
+      <span class="occ-pill">Family Reunions</span>
+      <span class="occ-pill">Community & Religious Events</span>
+      <span class="occ-pill">Graduations</span>
     </div>
   </div>
 </section>
 
-<section class="section alt-bg" id="reviews">
+<!-- HOW IT WORKS -->
+<section class="section">
   <div class="wrap">
-    <div class="section-head">
-      <div class="eyebrow">Kind Words</div>
-      <h2>From tables we've fed</h2>
+    <div class="section-title">
+      <div class="tag">How It Works</div>
+      <h2>Simple from start to table.</h2>
     </div>
-    <div class="testimonials">
-      <div class="t-card">
+    <div class="steps">
+      <div class="step">
+        <div class="step-n">01</div>
+        <h3>Tell us your date</h3>
+        <p>Share your headcount, occasion, and any dietary needs.</p>
+      </div>
+      <div class="step">
+        <div class="step-n">02</div>
+        <h3>Choose your package</h3>
+        <p>Pick A, B, or C — then mix and match your dishes.</p>
+      </div>
+      <div class="step">
+        <div class="step-n">03</div>
+        <h3>We cook fresh</h3>
+        <p>Everything made day-of. Nothing pre-made or frozen.</p>
+      </div>
+      <div class="step">
+        <div class="step-n">04</div>
+        <h3>Hot & on time</h3>
+        <p>Delivered and set up so you can focus on your guests.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="section alt" id="reviews">
+  <div class="wrap">
+    <div class="section-title">
+      <div class="tag">Kind Words</div>
+      <h2>From our tables to yours.</h2>
+    </div>
+    <div class="reviews">
+      <div class="r-card">
         <p>"It genuinely tasted homemade. Our wedding guests are still asking for the lamb shank recipe."</p>
-        <div class="who">— Sara M., Wedding Reception for 180 guests</div>
+        <div class="r-who">— Sara M., Wedding Reception · 180 guests</div>
       </div>
-      <div class="t-card">
-        <p>"They catered our entire office holiday party and even our gluten-sensitive coworkers had options. Reliable and delicious."</p>
-        <div class="who">— David Yusuf, Corporate Event</div>
+      <div class="r-card">
+        <p>"They catered our office holiday party and even our gluten-sensitive coworkers were covered. Reliable and delicious."</p>
+        <div class="r-who">— David Y., Corporate Event</div>
       </div>
-      <div class="t-card">
-        <p>"From the first call, it felt like talking to family. They remembered my daughter doesn't eat spicy food without me asking twice."</p>
-        <div class="who">— Aaliyah K., Birthday Gathering for 60 guests</div>
+      <div class="r-card">
+        <p>"From the first call, it felt like family. They remembered my daughter's spice preference without me asking twice."</p>
+        <div class="r-who">— Aaliyah K., Birthday Gathering · 60 guests</div>
       </div>
     </div>
   </div>
 </section>
 
+<!-- CONTACT -->
 <section class="section" id="contact">
   <div class="wrap">
-    <div class="cta-band">
-      <div>
-        <h2>Let's set your table.</h2>
-        <p>Fill out our short catering request form and we'll send a custom quote within one business day — no obligation, just good food talk.</p>
-        <div class="hero-actions" style="margin-top:24px;">
-          <a href="https://forms.gle/REPLACE_WITH_YOUR_FORM_LINK" target="_blank" rel="noopener" class="btn-primary" style="background:var(--burgundy);">Open Catering Request Form</a>
-        </div>
-        <div class="hero-tags" style="margin-top:28px;">
-          <span style="border-color:rgba(250,244,232,0.4); color:#fff;">📞 (213) 555-0148</span>
-          <span style="border-color:rgba(250,244,232,0.4); color:#fff;">✉️ hello@ummistable.com</span>
-        </div>
+    <div class="contact-band">
+      <h2>Let's set your table.</h2>
+      <p>Tell us about your event and we'll send a custom quote within one business day — no obligation.</p>
+      <div class="contact-info">
+        <a href="tel:+12135550148">📞 (213) 555-0148</a>
+        <a href="mailto:hello@ummistable.com">✉️ hello@ummistable.com</a>
       </div>
-      <!--
-        GOOGLE FORM CONNECTION
-        ----------------------
-        This form submits directly into your Google Form responses sheet.
-        To connect it to YOUR form, replace 3 things below:
-
-        1. The `action` URL — get this from your Google Form:
-           Open your form → click the 3-dot menu → "Get pre-filled link"
-           → fill in a name (then it works for any field).
-           OR: View the form's live HTML source and find the <form action="...">
-           URL. It ends in /formResponse instead of /viewform.
-
-        2. Each input's `name="entry.XXXXXXXXX"` — find these by opening your
-           Google Form, clicking "Get pre-filled link," filling in dummy
-           answers, clicking "Get Link," and copying the long URL. Each
-           field's number after entry.= is its ID.
-
-        3. Match field order/types to the GOOGLE_FORM_SETUP.md spec so each
-           input lines up with the right form question.
-
-        Full walkthrough: see GOOGLE_FORM_SETUP.md in this folder.
-      -->
-      <form class="cta-form"
-            action="https://docs.google.com/forms/d/e/REPLACE_WITH_YOUR_FORM_ID/formResponse"
-            method="POST"
-            target="hidden_iframe"
-            onsubmit="document.getElementById('form-success').style.display='block'; this.reset(); return true;">
-        <p style="font-weight:700; font-size:0.85rem; color:var(--olive-soft); margin-bottom:-2px;">Quick catering request:</p>
-        <input type="text" name="entry.111111111" placeholder="Your name" required>
-        <input type="email" name="entry.222222222" placeholder="Email address" required>
-        <select name="entry.333333333" required>
-          <option value="" disabled selected>Occasion</option>
-          <option>Wedding / Reception</option>
-          <option>Birthday</option>
-          <option>Office / Corporate Event</option>
-          <option>Holiday Gathering</option>
-          <option>Family Reunion</option>
-          <option>Community / Religious Event</option>
-          <option>Graduation</option>
-          <option>Other</option>
-        </select>
-        <input type="number" name="entry.444444444" placeholder="Estimated guest count" min="1">
-        <select name="entry.666666666">
-          <option value="" disabled selected>Menu package</option>
-          <option>Option A — 2 entrées, side, fruit &amp; dessert</option>
-          <option>Option B — 1 entrée, side, fruit &amp; dessert</option>
-          <option>Option C — 1 entrée, side &amp; dessert</option>
-          <option>Not sure yet</option>
-        </select>
-        <textarea name="entry.555555555" placeholder="Tell us about your event"></textarea>
-        <button type="submit">Send Request</button>
-        <p id="form-success" style="display:none; font-size:0.85rem; color:var(--burgundy); font-weight:700; margin-top:4px;">Thank you! Your request was sent — we'll be in touch within one business day.</p>
-      </form>
-      <iframe name="hidden_iframe" style="display:none;"></iframe>
+      <!-- Replace REPLACE_WITH_YOUR_FORM_LINK with your real Google Form short URL -->
+      <a href="https://forms.gle/REPLACE_WITH_YOUR_FORM_LINK" target="_blank" rel="noopener" class="big-form-btn">
+        <span>Get a Free Quote</span>
+        Request Catering ↗
+      </a>
     </div>
   </div>
 </section>
 
+<!-- FOOTER -->
 <footer>
   <div class="wrap">
-    <div class="footer-grid">
+    <div class="footer-inner">
       <div>
         <div class="footer-brand">
-          <img src="images/logo.png" alt="Ummi's Table logo">
-          <span>Ummi's Table</span>
+          <img src="https://raw.githubusercontent.com/ummistable/ummistable.github.io/refs/heads/main/ummistablelogo.PNG" alt="Ummi's Table">
+          Ummi's Table
         </div>
-        <p class="tagline">Homemade. Halal. Made with love.</p>
+        <p class="footer-tagline">Homemade. Halal. Made with love.</p>
       </div>
-      <div class="footer-links">
-        <div>
-          <h4>Explore</h4>
-          <a href="#story">Our Story</a>
+      <div class="footer-cols">
+        <div class="footer-col">
+          <h5>Explore</h5>
           <a href="#menu">Menu</a>
           <a href="#gallery">Gallery</a>
           <a href="#occasions">Occasions</a>
+          <a href="#reviews">Reviews</a>
         </div>
-        <div>
-          <h4>Connect</h4>
+        <div class="footer-col">
+          <h5>Connect</h5>
           <a href="#contact">Get a Quote</a>
           <a href="mailto:hello@ummistable.com">hello@ummistable.com</a>
           <a href="tel:+12135550148">(213) 555-0148</a>
@@ -720,6 +511,15 @@
     </div>
   </div>
 </footer>
+
+<script>
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
 
 </body>
 </html>
