@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#d97b2b">
+<title>One Step Today · یک قدم امروز</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800&family=Atkinson+Hyperlegible:wght@400;700&family=Vazirmatn:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:#2b2733; --ink-soft:#6d6678; --card:#ffffff;
+    --sky-a:#fff3e2; --sky-b:#ffe4c9;
+    --accent:#c96f2e; --accent-deep:#a5561d;
+    --glow:rgba(201,111,46,.14);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body {
+    font-family:'Atkinson Hyperlegible','Vazirmatn',system-ui,sans-serif;
+    color:var(--ink);
+    min-height:100vh; min-height:100dvh;
+    background:linear-gradient(170deg,var(--sky-a) 0%,var(--sky-b) 100%);
+    transition:background 1.2s ease;
+    display:flex; flex-direction:column; align-items:center;
+  }
+  body.fa { font-family:'Vazirmatn',system-ui,sans-serif; }
+  body.night { --ink:#f2eefa; --ink-soft:#b7aecb; --card:#332c44; }
+
+  .wrap { width:100%; max-width:430px; padding:18px 18px 30px;
+          display:flex; flex-direction:column; min-height:100vh; min-height:100dvh; }
+
+  /* ---------- header ---------- */
+  header { text-align:center; margin-bottom:4px; position:relative; }
+  .clock {
+    font-family:'Outfit','Vazirmatn',sans-serif; font-weight:800;
+    font-size:3.4rem; line-height:1.05; letter-spacing:-.01em;
+  }
+  .clock small { font-size:1.4rem; font-weight:700; color:var(--ink-soft); }
+  .daypart {
+    font-family:'Outfit','Vazirmatn',sans-serif; font-weight:800;
+    font-size:1.15rem; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--accent-deep); margin-top:2px;
+  }
+  body.fa .daypart { letter-spacing:.04em; }
+  body.night .daypart { color:var(--accent); }
+  .badges { margin-top:10px; display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
+  .week-badge {
+    display:inline-block;
+    font-family:'Outfit','Vazirmatn',sans-serif; font-weight:700; font-size:.9rem;
+    background:var(--card); color:var(--accent-deep);
+    border-radius:999px; padding:7px 15px;
+    box-shadow:0 6px 16px -8px rgba(60,40,20,.3);
+  }
+  body.night .week-badge { color:var(--accent); }
+
+  .hdr-btn {
+    position:absolute; top:4px;
+    font-family:'Outfit','Vazirmatn',sans-serif; font-weight:700; font-size:.92rem;
+    background:var(--card); color:var(--accent-deep);
+    border:2px solid var(--accent); border-radius:999px;
+    padding:7px 12px; cursor:pointer;
+  }
+  body.night .hdr-btn { color:var(--accent); }
+  .hdr-btn:focus-visible { outline:3px solid var(--ink); outline-offset:2px; }
+  #langBtn { inset-inline-end:0; }
+  #schedBtn { inset-inline-start:0; }
+  #chartBtn { inset-inline-start:56px; }
+
+  /* ---------- dots ---------- */
+  .dots { display:flex; gap:7px; flex-wrap:wrap; justify-content:center; margin:16px 0 20px; }
+  .dot { width:13px; height:13px; border-radius:50%; border:2px solid var(--accent); opacity:.45; transition:all .3s ease; }
+  .dot.done { background:var(--accent); opacity:1; }
+  .dot.now { opacity:1; transform:scale(1.35); box-shadow:0 0 0 5px var(--glow); }
+
+  /* ---------- card ---------- */
+  .stage { flex:1; display:flex; flex-direction:column; justify-content:center; }
+  .card {
+    background:var(--card); border-radius:26px;
+    padding:28px 24px 24px;
+    box-shadow:0 18px 44px -18px rgba(60,40,20,.28);
+    animation:rise .45s cubic-bezier(.2,.9,.3,1.2);
+  }
+  @keyframes rise { from{opacity:0;transform:translateY(22px);} to{opacity:1;transform:none;} }
+  @media (prefers-reduced-motion:reduce){ .card{animation:none;} body{transition:none;} }
+
+  .when {
+    font-family:'Outfit','Vazirmatn',sans-serif; font-weight:700; font-size:.85rem;
+    letter-spacing:.1em; text-transform:uppercase; color:var(--accent-deep);
+    display:flex; align-items:center; gap:8px; margin-bottom:12px;
+  }
+  body.fa .when { letter-spacing:.02em; font-size:.95rem; }
+  body.night .when { color:var(--accent); }
+  .when::before { content:''; width:22px; height:3px; border-radius:2px; background:var(--accent); flex:none; }
+
+  .task {
+    font-family:'Outfit','Vazirmatn',sans-serif; font-weight:800;
+    font-size:clamp(1.55rem,6.8vw,2rem); line-height:1.18; margin-bottom:10px;
+  }
+  .why { font-size:1rem; line-height:1.6; color:var(--ink-soft); margin-bottom:14px; }
+  .why b { color:var(--ink); }
+
+  .plate {
+    display:flex; align-items:center; gap:14px;
+    background:var(--glow); border:2px solid var(--accent);
+    border-radius:18px; padding:14px; margin-bottom:12px;
+  }
+  .plate .pic {
+    flex:none; width:74px; height:74px; border-radius:50%;
+    background:var(--card); overflow:hidden;
+    display:flex; align-items:center; justify-content:center;
+    font-size:2.6rem; box-shadow:inset 0 0 0 4px var(--glow);
+  }
+  .plate .pic img { width:100%; height:100%; object-fit:cover; }
+  .plate .txt { font-size:1.02rem; line-height:1.5; }
+  .plate .txt .lbl {
+    font-family:'Outfit','Vazirmatn',sans-serif; font-weight:800; font-size:.78rem;
+    letter-spacing:.1em; text-transform:uppercase; color:var(--accent-deep);
+    display:block; margin-bottom:3px;
+  }
+  body.fa .plate .txt .lbl { letter-spacing:.02em; font-size:.85rem; }
+  body.night .plate .txt .lbl { color:var(--accent); }
+
+  .menu { list-style:none; margin:0 0 16px; }
+  .menu li {
+    font-size:.98rem; line-height:1.5;
+    padding:9px 12px; margin-bottom:8px;
+    background:var(--glow); border-radius:12px;
+    border-inline-start:4px solid var(--accent);
+    display:flex; align-items:center; gap:10px;
+  }
+  .menu li .ic { font-size:1.5rem; flex:none; }
+  .swap { font-size:.9rem; color:var(--ink-soft); margin-bottom:16px; line-height:1.55; }
+
+  /* weight entry */
+  .wrow { display:flex; gap:10px; margin-bottom:10px; }
+  .wrow input {
+    flex:1; min-width:0; font-family:inherit; font-size:1.15rem;
+    padding:12px 14px; border:2px solid var(--accent); border-radius:12px;
+    background:var(--card); color:var(--ink);
+  }
+  .wrow button {
+    font-family:'Outfit','Vazirmatn',sans-serif; font-weight:800; font-size:1rem;
+    border:none; border-radius:12px; padding:12px 18px; cursor:pointer;
+    background:var(--accent); color:#fff;
+  }
+  .wsaved { font-size:.92rem; color:var(--ink-soft); margin-bottom:14px; }
+
+  .done-btn {
+    width:100%;
+    font-family:'Outfit','Vazirmatn',sans-serif; font-weight:800; font-size:1.3rem;
+    padding:19px; border:none; border-radius:18px;
+    background:var(--accent); color:#fff; cursor:pointer;
+    box-shadow:0 10px 22px -8px var(--accent);
+    transition:transform .12s ease;
+  }
+  .done-btn:active { transform:scale(.965); }
+  .done-btn:focus-visible { outline:3px solid var(--ink); outline-offset:3px; }
+  .skip {
+    display:block; width:100%; text-align:center;
+    background:none; border:none; cursor:pointer;
+    margin-top:12px; font-family:inherit; font-size:.95rem;
+    color:var(--ink-soft); text-decoration:underline; text-underline-offset:3px;
+  }
+
+  /* ---------- countdown ---------- */
+  .next { margin-top:16px; text-align:center; font-size:.98rem; color:var(--ink-soft); line-height:1.6; }
+  .next b { font-family:'Outfit','Vazirmatn',sans-serif; font-weight:700; color:var(--ink); }
+  .count {
+    display:inline-flex; align-items:baseline; gap:10px; margin-top:8px;
+    font-family:'Outfit','Vazirmatn',sans-serif; font-weight:800;
+    color:var(--accent-deep); background:var(--card);
+    border-radius:16px; padding:10px 20px;
+    box-shadow:0 8px 20px -8px rgba(60,40,20,.35);
+  }
+  body.night .count { color:var(--accent); }
+  .count .digits { font-size:1.9rem; letter-spacing:.04em; font-variant-numeric:tabular-nums; }
+  .count .cap { font-size:.78rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-soft); }
+  body.fa .count .cap { letter-spacing:.02em; font-size:.85rem; }
+
+  footer {
+    margin-top:20px; text-align:center;
+    font-family:'Outfit','Vazirmatn',sans-serif; font-weight:500;
+    font-size:.92rem; color:var(--ink-soft);
+  }
+
+  .celebrate { text-align:center; padding:40px 10px; }
+  .celebrate .big { font-size:3.4rem; margin-bottom:14px; }
+  .celebrate h2 { font-family:'Outfit','Vazirmatn',sans-serif; font-weight:800; font-size:1.9rem; margin-bottom:10px; }
+  .celebrate p { color:var(--ink-soft); font-size:1.05rem; line-height:1.6; }
+
+  /* ---------- welcome question (first open) ---------- */
+  #welcome {
+    position:fixed; inset:0; z-index:80; display:none;
+    background:linear-gradient(170deg,#fff3e0 0%,#ffdfba 100%);
+    align-items:center; justify-content:center; padding:22px;
+  }
+  #welcome.open { display:flex; }
+  .wel-card {
+    background:#fff; border-radius:26px; max-width:400px; width:100%;
+    padding:32px 26px; text-align:center;
+    box-shadow:0 24px 60px -20px rgba(120,70,20,.4);
+  }
+  .wel-card .big { font-size:3rem; margin-bottom:12px; }
+  .wel-card h2 {
+    font-family:'Outfit','Vazirmatn',sans-serif; font-weight:800;
+    font-size:1.35rem; line-height:1.3; color:#2b2733; margin-bottom:6px;
+  }
+  .wel-card .fa-q {
+    font-family:'Vazirmatn',sans-serif; font-weight:600;
+    font-size:1.1rem; line-height:1.6; color:#2b2733; margin-bottom:12px; direction:rtl;
+  }
+  .wel-card .hint2 { font-size:.9rem; color:#6d6678; line-height:1.55; margin-bottom:18px; }
+  .wel-card input[type=date] {
+    width:100%; font-family:inherit; font-size:1.15rem;
+    padding:14px; border:2px solid #d97b2b; border-radius:14px;
+    background:#fff; color:#2b2733; margin-bottom:16px;
+  }
+  .wel-card .go {
+    width:100%;
+    font-family:'Outfit','Vazirmatn',sans-serif; font-weight:800; font-size:1.25rem;
+    padding:17px; border:none; border-radius:16px;
+    background:#d97b2b; color:#fff; cursor:pointer;
+    box-shadow:0 10px 22px -8px #d97b2b;
+  }
+  .wel-card .go:active { transform:scale(.97); }
+
+  /* ---------- schedule modal ---------- */
+  .modal-bg {
+    position:fixed; inset:0; background:rgba(30,20,40,.55);
+    display:none; align-items:center; justify-content:center; z-index:50;
+    padding:16px;
+  }
+  .modal-bg.open { display:flex; }
+  .modal {
+    background:var(--card); border-radius:24px;
+    width:100%; max-width:390px; padding:24px 20px;
+    box-shadow:0 30px 70px -20px rgba(0,0,0,.5);
+    max-height:88vh; overflow-y:auto;
+  }
+  .modal h3 {
+    font-family:'Outfit','Vazirmatn',sans-serif; font-weight:800; font-size:1.3rem;
+    margin-bottom:6px;
+  }
+  .modal .hint { font-size:.88rem; color:var(--ink-soft); line-height:1.5; margin-bottom:16px; }
+  .modal .opt {
+    display:flex; align-items:center; gap:12px; width:100%;
+    font-family:inherit; font-size:1rem; font-weight:700; color:var(--ink);
+    background:var(--glow); border:2px solid var(--accent);
+    border-radius:14px; padding:13px; margin-bottom:9px; cursor:pointer;
+    text-align:start;
+  }
+  .modal .opt .ic { font-size:1.4rem; flex:none; }
+  .modal .opt small { display:block; font-weight:400; font-size:.83rem; color:var(--ink-soft); }
+  .pickrow { display:flex; gap:8px; margin-bottom:9px; }
+  .pickrow select {
+    flex:1; min-width:0; font-family:inherit; font-size:.98rem;
+    padding:11px; border:2px solid var(--accent); border-radius:12px;
+    background:var(--card); color:var(--ink);
+  }
+  .set { margin-top:14px; border-top:2px solid var(--glow); padding-top:14px; }
+  .set h4 { font-family:'Outfit','Vazirmatn',sans-serif; font-weight:800; font-size:1.05rem; margin-bottom:10px; }
+  .set label { display:block; font-size:.85rem; color:var(--ink-soft); margin-bottom:4px; }
+  .set input {
+    width:100%; font-family:inherit; font-size:.95rem;
+    padding:10px 12px; border:2px solid var(--glow); border-radius:10px;
+    background:var(--card); color:var(--ink); margin-bottom:10px;
+  }
+  .set input:focus { border-color:var(--accent); outline:none; }
+  .set .togl {
+    font-family:'Outfit','Vazirmatn',sans-serif; font-weight:700; font-size:.95rem;
+    border:2px solid var(--accent); border-radius:999px; padding:9px 16px;
+    background:var(--card); color:var(--accent-deep); cursor:pointer;
+  }
+  .set .togl.on { background:var(--accent); color:#fff; }
+  .set .note { font-size:.78rem; color:var(--ink-soft); line-height:1.5; margin-top:6px; }
+  .modal .close {
+    display:block; margin:12px auto 0; background:none; border:none; cursor:pointer;
+    font-family:inherit; font-size:.95rem; color:var(--ink-soft);
+    text-decoration:underline; text-underline-offset:3px;
+  }
+
+  /* ---------- viewer (schedules, grocery, chart; printable) ---------- */
+  #printArea {
+    display:none; position:fixed; inset:0; z-index:60;
+    background:#fff; color:#1c1c1c; overflow-y:auto;
+    font-family:'Vazirmatn','Atkinson Hyperlegible',sans-serif;
+  }
+  #printArea.open { display:block; }
+  #paBar {
+    position:sticky; top:0; z-index:2;
+    display:flex; gap:10px; align-items:center;
+    background:#2b2733; padding:12px 16px;
+  }
+  #paBar button {
+    font-family:'Outfit','Vazirmatn',sans-serif; font-weight:700; font-size:.95rem;
+    border:none; border-radius:999px; padding:10px 16px; cursor:pointer;
+  }
+  #paPrint { background:#d97b2b; color:#fff; }
+  #paClose { background:transparent; color:#fff; border:2px solid #6d6678 !important; }
+  #paNote { color:#cfc8dd; font-size:.78rem; line-height:1.4; flex:1; }
+  #paContent { padding:20px 16px 40px; max-width:900px; margin:0 auto; }
+  #paContent h1 { font-size:1.45rem; margin-bottom:4px; }
+  #paContent .sub { font-size:.9rem; color:#555; margin-bottom:14px; }
+  #paContent table { width:100%; border-collapse:collapse; font-size:.85rem; margin-bottom:18px; }
+  #paContent th, #paContent td { border:1px solid #999; padding:7px 8px; text-align:start; vertical-align:top; line-height:1.5; }
+  #paContent th { background:#f0e7dc; font-weight:700; }
+  #paContent .rules { font-size:.85rem; line-height:1.65; margin-bottom:14px; background:#faf5ec; border-inline-start:4px solid #d97b2b; padding:10px 12px; border-radius:8px; }
+  #paContent .foot { font-size:.75rem; color:#666; margin-top:10px; }
+  #paContent .stats { display:flex; gap:14px; flex-wrap:wrap; margin-bottom:14px; }
+  #paContent .stat { background:#faf5ec; border-radius:12px; padding:10px 14px; }
+  #paContent .stat b { display:block; font-size:1.25rem; }
+  #paContent .stat span { font-size:.78rem; color:#666; }
+  #paContent svg { width:100%; height:auto; background:#fffdf9; border:1px solid #e5dccc; border-radius:12px; }
+  @media print {
+    body { background:#fff !important; }
+    .wrap, .modal-bg, #paBar { display:none !important; }
+    #printArea { display:block !important; position:static; overflow:visible; }
+    #paContent { padding:0; max-width:none; }
+    #paContent h1 { font-size:18pt; }
+    #paContent table { font-size:9pt; }
+    #paContent th, #paContent td { padding:5pt 6pt; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <button class="hdr-btn" id="schedBtn">&#128197;</button>
+    <button class="hdr-btn" id="chartBtn">&#128200;</button>
+    <button class="hdr-btn" id="langBtn">فارسی دری</button>
+    <div class="clock" id="clock">–:––</div>
+    <div class="daypart" id="daypart"></div>
+    <div class="badges">
+      <span class="week-badge" id="weekBadge"></span>
+      <span class="week-badge" id="streakChip" style="display:none"></span>
+    </div>
+  </header>
+  <div class="dots" id="dots" aria-label="progress"></div>
+  <div class="stage" id="stage"></div>
+  <footer id="footer"></footer>
+</div>
+
+<div id="welcome">
+  <div class="wel-card">
+    <div class="big">&#127793;</div>
+    <h2>When did you start your fat loss program?</h2>
+    <div class="fa-q">برنامه کاهش وزن را از چه تاریخی شروع کردی؟</div>
+    <div class="hint2">Starting today? Keep today's date. &middot; اگر امروز شروع می‌کنی، تاریخ امروز را بگذار.</div>
+    <input type="date" id="welDate">
+    <button class="go" id="welGo">Start &middot; شروع</button>
+  </div>
+</div>
+
+<div class="modal-bg" id="modalBg">
+  <div class="modal" role="dialog" aria-modal="true">
+    <h3 id="mTitle"></h3>
+    <div class="hint" id="mHint"></div>
+    <button class="opt" id="optDay"><span class="ic">&#128196;</span><span id="optDayTxt"></span></button>
+    <button class="opt" id="optWeek"><span class="ic">&#128198;</span><span id="optWeekTxt"></span></button>
+    <button class="opt" id="optProg"><span class="ic">&#128467;&#65039;</span><span id="optProgTxt"></span></button>
+    <button class="opt" id="optGroc"><span class="ic">&#128722;</span><span id="optGrocTxt"></span></button>
+
+    <div class="set">
+      <h4 id="pickTitle"></h4>
+      <div class="pickrow">
+        <select id="pickWeek"></select>
+        <select id="pickDay"></select>
+      </div>
+      <button class="opt" id="optPick" style="margin-bottom:0"><span class="ic">&#127919;</span><span id="optPickTxt"></span></button>
+    </div>
+
+    <div class="set">
+      <h4 id="setTitle"></h4>
+      <label id="lblStart" for="inStart"></label>
+      <input type="date" id="inStart">
+      <label id="lblHook" for="inHook"></label>
+      <input type="url" id="inHook" placeholder="https://script.google.com/macros/s/.../exec">
+      <button class="togl" id="notifBtn"></button>
+      <div class="note" id="setNote"></div>
+    </div>
+
+    <button class="close" id="mClose"></button>
+  </div>
+</div>
+
+<div id="printArea">
+  <div id="paBar">
+    <button id="paPrint"></button>
+    <button id="paClose"></button>
+    <span id="paNote"></span>
+  </div>
+  <div id="paContent"></div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ============================================================
+     PERSISTENT STATE (localStorage with safe in-memory fallback)
+     NOTE: storage is blocked inside the claude.ai preview iframe,
+     so persistence only works when this file is opened directly
+     in a browser or deployed to GitHub Pages.
+     ============================================================ */
+  var LS_KEY = 'ost.state.v1';
+  var mem = null;
+  function lsRead() {
+    try { return localStorage.getItem(LS_KEY); } catch (e) { return mem; }
+  }
+  function lsWrite(v) {
+    mem = v;
+    try { localStorage.setItem(LS_KEY, v); } catch (e) { /* preview sandbox */ }
+  }
+
+  var state = {
+    lang: 'en',
+    startDate: '',             // set by the welcome question on first open
+    webhook: '',
+    notif: false,
+    days: {},                  // 'YYYY-MM-DD' -> {done:[i..], total:n, complete:bool}
+    weights: {},               // 'YYYY-MM-DD' -> kg
+    notified: {}               // 'YYYY-MM-DD-hh' -> 1
+  };
+  (function loadState() {
+    var raw = lsRead();
+    if (!raw) return;
+    try {
+      var s = JSON.parse(raw);
+      for (var k in state) if (s.hasOwnProperty(k)) state[k] = s[k];
+    } catch (e) {}
+  })();
+  var m0 = window.location.search.match(/[?&]start=(\d{4}-\d{2}-\d{2})/);
+  if (m0) state.startDate = m0[1];
+  function saveState() { lsWrite(JSON.stringify(state)); }
+
+  var lang = state.lang || 'en';
+
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function dateKey(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  function faNum(n) {
+    var map = {'0':'۰','1':'۱','2':'۲','3':'۳','4':'۴','5':'۵','6':'۶','7':'۷','8':'۸','9':'۹'};
+    return String(n).replace(/[0-9]/g, function (d) { return map[d]; });
+  }
+  function num(n) { return (lang === 'fa') ? faNum(n) : String(n); }
+  function stripTags(x) { return String(x).replace(/<[^>]+>/g, ''); }
+
+  /* ================= UI strings (fa = Dari / Afghanistan) ================= */
+  var UI = {
+    en: {
+      done:'Done \u2713', skip:'Skip this one today',
+      next:'Next up', around:'around',
+      capStarts:'until it starts',
+      comingUp:'Coming up \u00b7 from',
+      todaysPlate:'Today\u2019s plate',
+      swap:'\uD83D\uDD01 Not feeling it? Swap with any other day\u2019s meal \u2014 same portions.',
+      steps:function(a,b){ return a+' of '+b+' steps done today'; },
+      week:function(w,d,ph){ return 'Week '+w+'/12 \u00b7 Day '+d+'/84 \u00b7 '+ph; },
+      streak:function(n){ return '\uD83D\uDD25 '+n+' day streak'; },
+      phases:['Foundation','Full meal plan','Plan + strength','Final push'],
+      dayDone:'Day complete.',
+      dayDoneMsg:'Every step, done. Rest well tonight \u2014 tomorrow brings a new plate and the same simple rhythm. One day at a time is how 12 weeks get finished.',
+      dayparts:['Night','Morning','Afternoon','Evening'],
+      hourFmt:function(h){ var a=h>=12?'PM':'AM'; var x=h%12; if(x===0)x=12; return x+' '+a; },
+      mTitle:'Schedules & settings',
+      mHint:'Tables open in a viewer with a Save-as-PDF button.',
+      optDay:'Today\u2019s plan <small>All of today\u2019s steps, times & meals</small>',
+      optWeek:'Weekly table <small>7-day menu + exercise grid</small>',
+      optProg:'12-week program <small>Phases, walks, strength, focus</small>',
+      optGroc:'Grocery list <small>One week of shopping, quantities totaled</small>',
+      pickTitle:'Jump to a specific day',
+      optPick:'Show that day\u2019s plan',
+      weekWord:'Week', 
+      setTitle:'Settings',
+      lblStart:'Program start date (Day 1)',
+      lblHook:'Google Sheets webhook URL (optional)',
+      notifOn:'\uD83D\uDD14 Reminders: ON', notifOff:'\uD83D\uDD15 Enable reminders',
+      setNote:'Reminders fire at each step\u2019s time while the app is open or installed to the home screen. Data is saved on this device (works on GitHub Pages; the claude.ai preview blocks saving).',
+      mClose:'Close',
+      paPrint:'Save as PDF / Print',
+      paBlocked:'Printing is blocked in this preview. Open the file in your phone or computer browser (or the GitHub Pages link) and this button will open the Save-as-PDF dialog.',
+      days:['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
+      wPlaceholder:'e.g. 98.4', wSave:'Save weight', wUnit:'kg',
+      wSavedToday:function(kg){ return 'Saved today: '+kg+' kg \u2713 (tap to change)'; },
+      chartTitle:'Weight trend', chartEmpty:'No weigh-ins saved yet. Enter your weight on the morning scale step \u2014 each entry appears here.',
+      stFirst:'Start', stLast:'Latest', stDiff:'Change', stAvg:'This week avg',
+      legDaily:'daily', legWeekly:'weekly average',
+      pdf: {
+        dailyTitle:'Plan', weeklyTitle:'Weekly Schedule', progTitle:'12-Week Program', grocTitle:'Weekly Grocery List',
+        time:'Time', step:'Step', details:'Details',
+        day:'Day', breakfast:'Breakfast (~350 kcal)', lunch:'Lunch (~450 kcal)', snack:'Snack (~125 kcal)', dinner:'Dinner (~550 kcal)', exercise:'Exercise',
+        weekCol:'Week', phase:'Phase', walking:'Walking', strengthCol:'Strength (Mon/Wed/Sat)', focus:'Focus',
+        item:'Item', qty:'Quantity',
+        yes:'Yes \u2014 20 min', no:'\u2014',
+        dailyRules:'Every day: no sugary drinks \u00b7 water before meals \u00b7 weigh in each morning \u00b7 7\u20138 hours of sleep \u00b7 kitchen closes after the evening snack.',
+        weeklyRules:'Fixed daily rhythm: wake \u2192 weigh in \u2192 water \u2192 breakfast \u2192 pack lunch \u2192 water check (10 AM) \u2192 lunch (12) \u2192 snack (3 PM) \u2192 walk (after work) \u2192 dinner (6 PM) \u2192 kitchen closed (8 PM) \u2192 sleep prep (9 PM). Friday dinner is the planned treat meal. Sunday 3 PM: 90-minute meal prep.',
+        grocRules:'Covers the full 7-day rotation for one person. Approximate cost $45\u201360. Store brands, dried beans, frozen vegetables, and whole chicken cuts keep it cheap.',
+        foot:'One Step Today \u00b7 12-week plan \u00b7 ~1,600 kcal/day \u00b7 100+ g protein \u00b7 target 0.5\u20131 kg per week'
+      }
+    },
+    fa: {
+      done:'انجام شد \u2713',
+      skip:'امروز از این تیر شو',
+      next:'قدم بعدی',
+      around:'حدود ساعت',
+      capStarts:'تا شروع',
+      comingUp:'به‌زودی \u00b7 از',
+      todaysPlate:'غذای امروز',
+      swap:'\uD83D\uDD01 خوشت نیامد؟ با غذای یک روز دیگر عوض کن \u2014 با همان اندازه‌ها.',
+      steps:function(a,b){ return faNum(a)+' از '+faNum(b)+' قدم امروز انجام شد'; },
+      week:function(w,d,ph){ return 'هفته '+faNum(w)+'/'+faNum(12)+' \u00b7 روز '+faNum(d)+'/'+faNum(84)+' \u00b7 '+ph; },
+      streak:function(n){ return '\uD83D\uDD25 '+faNum(n)+' روز پیاپی'; },
+      phases:['پایه‌گذاری','برنامه کامل غذایی','برنامه + ورزش قدرتی','مرحله آخر'],
+      dayDone:'روز مکمل شد!',
+      dayDoneMsg:'همه قدم‌ها انجام شد. امشب خوب استراحت کن \u2014 صبا غذای تازه در انتظار است. راز کامیابی همین است: روز به روز.',
+      dayparts:['شب','صبح','بعد از چاشت','عصر'],
+      hourFmt:function(h){
+        var a;
+        if(h>=20||h<5)a='شب';
+        else if(h<12)a='صبح';
+        else if(h<16)a='چاشت';
+        else a='عصر';
+        var x=h%12; if(x===0)x=12;
+        return faNum(x)+' بجه '+a;
+      },
+      mTitle:'جدول‌ها و تنظیمات',
+      mHint:'جدول‌ها در یک صفحه باز می‌شوند که دکمه Save as PDF دارد.',
+      optDay:'برنامه امروز <small>تمام قدم‌ها، وقت‌ها و غذاهای امروز</small>',
+      optWeek:'جدول هفته <small>منوی ۷ روز + ورزش</small>',
+      optProg:'برنامه ۱۲ هفته <small>مرحله‌ها، قدم زدن، ورزش</small>',
+      optGroc:'لست خریداری <small>سودای یک هفته با مقدارها</small>',
+      pickTitle:'رفتن به یک روز مشخص',
+      optPick:'برنامه همان روز را نشان بده',
+      weekWord:'هفته',
+      setTitle:'تنظیمات',
+      lblStart:'تاریخ شروع برنامه (روز اول)',
+      lblHook:'لینک Google Sheets webhook (اختیاری)',
+      notifOn:'\uD83D\uDD14 یادآوری‌ها: فعال', notifOff:'\uD83D\uDD15 فعال کردن یادآوری‌ها',
+      setNote:'یادآوری‌ها در وقت هر قدم می‌آیند، وقتی اپ باز یا روی صفحه اصلی نصب باشد. معلومات روی همین موبایل ذخیره می‌شود (در GitHub Pages کار می‌کند؛ پیش‌نمایش claude.ai ذخیره را بسته است).',
+      mClose:'بسته کن',
+      paPrint:'چاپ / Save as PDF',
+      paBlocked:'چاپ در این پیش‌نمایش بسته است. فایل را در براوزر تلفون یا کمپیوتر باز کن \u2014 آنجا این دکمه صفحه Save as PDF را باز می‌کند.',
+      days:['یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه','شنبه'],
+      wPlaceholder:'مثلاً ۹۸.۴', wSave:'ثبت وزن', wUnit:'کیلو',
+      wSavedToday:function(kg){ return 'امروز ثبت شد: '+faNum(kg)+' کیلو \u2713 (برای تغییر دوباره بنویس)'; },
+      chartTitle:'روند وزن', chartEmpty:'هنوز وزنی ثبت نشده. صبح در قدم ترازو وزن خود را بنویس \u2014 هر ثبت اینجا نمایان می‌شود.',
+      stFirst:'شروع', stLast:'آخرین', stDiff:'تغییر', stAvg:'اوسط این هفته',
+      legDaily:'روزانه', legWeekly:'اوسط هفته',
+      pdf: {
+        dailyTitle:'برنامه', weeklyTitle:'جدول هفته', progTitle:'برنامه ۱۲ هفته', grocTitle:'لست خریداری هفته',
+        time:'وقت', step:'قدم', details:'تفصیل',
+        day:'روز', breakfast:'ناشتا (حدود ۳۵۰ کالری)', lunch:'نان چاشت (حدود ۴۵۰ کالری)', snack:'غذای سبک (حدود ۱۲۵ کالری)', dinner:'نان شب (حدود ۵۵۰ کالری)', exercise:'ورزش',
+        weekCol:'هفته', phase:'مرحله', walking:'قدم زدن', strengthCol:'ورزش قدرتی (دوشنبه/چهارشنبه/شنبه)', focus:'تمرکز',
+        item:'جنس', qty:'مقدار',
+        yes:'بلی \u2014 ۲۰ دقیقه', no:'\u2014',
+        dailyRules:'هر روز: نوشیدنی شیرین نخور \u00b7 پیش از هر غذا آب \u00b7 هر صبح وزن بگیر \u00b7 ۷ تا ۸ ساعت خواب \u00b7 بعد از غذای سبک شب، آشپزخانه بسته است.',
+        weeklyRules:'ریتم ثابت روزانه: بیداری \u2190 وزن \u2190 آب \u2190 ناشتا \u2190 گرفتن نان چاشت \u2190 آب (۱۰ بجه) \u2190 نان چاشت (۱۲ بجه) \u2190 غذای سبک (۳ بجه) \u2190 قدم زدن (بعد از کار) \u2190 نان شب (۶ بجه) \u2190 آشپزخانه بسته (۸ بجه) \u2190 آمادگی خواب (۹ بجه). نان شب جمعه وعده آزاد است. یکشنبه ۳ بجه: ۹۰ دقیقه جور کردن غذای هفته.',
+        grocRules:'برای تمام ۷ روز، یک نفر. قیمت حدود ۴۵ تا ۶۰ دالر. برندهای ارزان، لوبیای خشک، ترکاری یخ‌زده و مرغ کامل خرچ را کم می‌کند.',
+        foot:'یک قدم امروز \u00b7 برنامه ۱۲ هفته \u00b7 حدود ۱۶۰۰ کالری در روز \u00b7 بیشتر از ۱۰۰ گرام پروتین \u00b7 هدف: نیم تا ۱ کیلو در هفته'
+      }
+    }
+  };
+
+  /* ============================================================
+     7-DAY ROTATING MENUS (0=Sunday..6=Saturday) — fa = Dari
+     To use a real photo instead of the emoji, add:
+       img:'img/monday-dinner.jpg'
+     (put photos in an img/ folder in the repo)
+     ============================================================ */
+  var ROT = {
+    breakfast: [
+      { pic:'\uD83E\uDD63', en:'Overnight oats: \u00bd cup oats + \u00be cup yogurt + cinnamon', fa:'جو دوسر شب‌مانده: \u00bd پیمانه جو + \u00be پیمانه ماست + دارچین' },
+      { pic:'\uD83C\uDF73', en:'3 eggs (fried, little oil) + \u00bd naan, palm-size', fa:'۳ تخم (نیمرو با روغن کم) + نیم نان به اندازه کف دست' },
+      { pic:'\uD83E\uDED0', en:'1 cup yogurt + \u00bd cup frozen berries + 3 tbsp oats', fa:'۱ پیمانه ماست + \u00bd پیمانه توت یخ‌زده + ۳ قاشق جو دوسر' },
+      { pic:'\uD83C\uDF45', en:'3-egg omelet with onion & tomato + 1 slice toast', fa:'املیت ۳ تخمه با پیاز و بادنجان رومی + ۱ توته نان تست' },
+      { pic:'\uD83C\uDF4C', en:'\u00bd cup oats cooked in water + 1 sliced banana + cinnamon', fa:'\u00bd پیمانه جو دوسر پخته + ۱ کیله حلقه‌شده + دارچین' },
+      { pic:'\uD83E\uDD5A', en:'2 boiled eggs + 1 cup plain yogurt + cucumber slices', fa:'۲ تخم جوش‌داده + ۱ پیمانه ماست + چند توته بادرنگ' },
+      { pic:'\uD83C\uDF5E', en:'3 scrambled eggs + 1 slice toast + tomato', fa:'۳ تخم هم‌زده + ۱ توته نان تست + بادنجان رومی' }
+    ],
+    lunch: [
+      { pic:'\uD83C\uDF5B', en:'Bean & rice bowl: \u00bd cup beans + \u00bd cup rice + lettuce + salsa', fa:'کاسه لوبیا و برنج: \u00bd پیمانه لوبیا + \u00bd پیمانه برنج + کاهو' },
+      { pic:'\uD83D\uDC1F', en:'1 can tuna + \u00bd cup rice + 1 cup vegetables + hot sauce', fa:'۱ قطی ماهی تن + \u00bd پیمانه برنج + ۱ پیمانه ترکاری + چتنی تند' },
+      { pic:'\uD83C\uDF71', en:'Leftover Monday chicken + rice (your prepped container)', fa:'باقی‌مانده مرغ دوشنبه + برنج (قطی آماده‌شده)' },
+      { pic:'\uD83E\uDD5A', en:'2 boiled eggs + \u00bd cup beans + \u00bd cup rice + salsa', fa:'۲ تخم جوش‌داده + \u00bd پیمانه لوبیا + \u00bd پیمانه برنج' },
+      { pic:'\uD83C\uDF71', en:'Leftover Wednesday dinner + raw vegetables', fa:'باقی‌مانده نان شب چهارشنبه + ترکاری خام' },
+      { pic:'\uD83E\uDD57', en:'Tuna salad: 1 can tuna + 2 tbsp yogurt + vegetables + \u00bd naan', fa:'سلاته تن: ۱ قطی ماهی تن + ۲ قاشق ماست + ترکاری + نیم نان' },
+      { pic:'\uD83E\uDD63', en:'1\u00bd cups lentil soup + 1 slice bread', fa:'۱\u00bd پیمانه سوپ دال + ۱ توته نان' }
+    ],
+    snack: [
+      { pic:'\uD83C\uDF4E', en:'1 apple', fa:'۱ سیب' },
+      { pic:'\uD83E\uDD5B', en:'1 cup plain yogurt', fa:'۱ پیمانه ماست ساده' },
+      { pic:'\uD83E\uDD5A', en:'2 boiled eggs', fa:'۲ تخم جوش‌داده' },
+      { pic:'\uD83C\uDF4C', en:'1 banana', fa:'۱ کیله' },
+      { pic:'\uD83E\uDD5C', en:'30 g peanuts \u2014 one small handful, count it', fa:'۳۰ گرام مومپلی \u2014 یک مشت خورد، بشمار' },
+      { pic:'\uD83C\uDF4E', en:'1 apple + green tea', fa:'۱ سیب + چای سبز' },
+      { pic:'\uD83E\uDD5B', en:'1 cup yogurt + cinnamon', fa:'۱ پیمانه ماست + دارچین' }
+    ],
+    dinner: [
+      { pic:'\uD83C\uDF72', en:'1\u00bd cups lentil dal + \u00bc naan + cucumber-tomato salad', fa:'۱\u00bd پیمانه دال + یک توته نان + سلاته بادرنگ و بادنجان رومی' },
+      { pic:'\uD83C\uDF57', en:'2 small chicken thighs (skin off) + 1 cup rice + lots of vegetables', fa:'۲ ران خورد مرغ بدون پوست + ۱ پیمانه برنج + ترکاری فراوان' },
+      { pic:'\uD83C\uDF2E', en:'150 g lean ground beef bowl: beans + lettuce + salsa + 1 small tortilla', fa:'۱۵۰ گرام گوشت قیمه کم‌چرب + لوبیا + کاهو + ۱ نان خورد' },
+      { pic:'\uD83C\uDF73', en:'2 eggs baked on \u00bd cup beans + 1 slice toast', fa:'۲ تخم روی \u00bd پیمانه لوبیا + ۱ توته نان تست' },
+      { pic:'\uD83E\uDD54', en:'2 chicken drumsticks + 1 medium boiled potato + vegetables', fa:'۲ ساق مرغ + ۱ کچالوی متوسط جوش‌داده + ترکاری' },
+      { pic:'\uD83C\uDF7D\uFE0F', en:'Planned treat meal \u2014 ONE plate of anything you love. Slowly, zero guilt. Back on plan tomorrow.', fa:'وعده آزاد \u2014 یک بشقاب از هر غذایی که خوش داری. آهسته و با لذت، بدون عذاب وجدان. صبا دوباره سر برنامه.' },
+      { pic:'\uD83E\uDD58', en:'Chicken & vegetable stir-fry (150 g chicken) + 1 cup rice', fa:'مرغ سرخ‌شده با ترکاری (۱۵۰ گرام مرغ) + ۱ پیمانه برنج' }
+    ]
+  };
+
+  /* weekly grocery list (curated from the 7-day rotation) */
+  var GROC = [
+    { en:['Eggs','24 (2 dozen)'], fa:['تخم','۲۴ دانه'] },
+    { en:['Chicken thighs, small','4'], fa:['ران خورد مرغ','۴ دانه'] },
+    { en:['Chicken drumsticks','2'], fa:['ساق مرغ','۲ دانه'] },
+    { en:['Chicken for stir-fry','150 g'], fa:['مرغ برای سرخ کردن','۱۵۰ گرام'] },
+    { en:['Lean ground beef','150 g'], fa:['گوشت قیمه کم‌چرب','۱۵۰ گرام'] },
+    { en:['Canned tuna','3 cans'], fa:['ماهی تن','۳ قطی'] },
+    { en:['Dried lentils (dal)','500 g'], fa:['دال (عدس)','۵۰۰ گرام'] },
+    { en:['Beans','500 g dried or 2 cans'], fa:['لوبیا','۵۰۰ گرام خشک یا ۲ قطی'] },
+    { en:['Rice','1 kg'], fa:['برنج','۱ کیلو'] },
+    { en:['Oats','500 g'], fa:['جو دوسر','۵۰۰ گرام'] },
+    { en:['Plain yogurt','1 big tub (~1 kg)'], fa:['ماست ساده','۱ ظرف کلان (حدود ۱ کیلو)'] },
+    { en:['Frozen mixed vegetables','2 bags'], fa:['ترکاری یخ‌زده','۲ پاکت'] },
+    { en:['Frozen berries','1 small bag'], fa:['توت یخ‌زده','۱ پاکت خورد'] },
+    { en:['Apples','3'], fa:['سیب','۳ دانه'] },
+    { en:['Bananas','2'], fa:['کیله','۲ دانه'] },
+    { en:['Cucumbers','3'], fa:['بادرنگ','۳ دانه'] },
+    { en:['Tomatoes','4'], fa:['بادنجان رومی','۴ دانه'] },
+    { en:['Onions','2'], fa:['پیاز','۲ دانه'] },
+    { en:['Lettuce','1 head'], fa:['کاهو','۱ دانه'] },
+    { en:['Naan + toast bread','2 naan + 1 small loaf'], fa:['نان + نان تست','۲ نان + ۱ قطی نان تست'] },
+    { en:['Small tortillas','1 pack'], fa:['نان خورد (ترتیا)','۱ پاکت'] },
+    { en:['Peanuts','200 g bag'], fa:['مومپلی','۱ پاکت ۲۰۰ گرامه'] },
+    { en:['Salsa / hot sauce, cinnamon, green tea','1 each'], fa:['چتنی، دارچین، چای سبز','از هر کدام ۱'] }
+  ];
+
+  /* ============================================================
+     THE DAY PLAN (fa = Dari)
+     ============================================================ */
+  var PLAN = [
+    { start:5, weigh:true,
+      when:{en:'Right after waking',fa:'بلافاصله بعد از بیدار شدن'},
+      task:{en:'Step on the scale',fa:'وزن خود را بگیر'},
+      why:{en:'Before eating or drinking. Enter it below \u2014 <b>only the weekly average matters</b>.',
+           fa:'پیش از خوردن یا نوشیدن. همین‌جا بنویس \u2014 <b>فقط اوسط هفته مهم است</b>، نه عدد امروز.'} },
+
+    { start:5,
+      when:{en:'Still in the kitchen',fa:'همانجا در آشپزخانه'},
+      task:{en:'Drink a big glass of water',fa:'یک گیلاس کلان آب بنوش'},
+      why:{en:'About 500 ml. All day: <b>water, tea, coffee \u2014 nothing sweetened.</b>',
+           fa:'حدود ۵۰۰ ملی‌لیتر. در تمام روز: <b>آب، چای، قهوه \u2014 هیچ نوشیدنی شیرین نخور.</b>'} },
+
+    { start:6, meal:'breakfast',
+      when:{en:'Breakfast \u00b7 ~350 kcal',fa:'ناشتا \u00b7 حدود ۳۵۰ کالری'},
+      task:{en:'Breakfast',fa:'ناشتا'},
+      why:{en:'Sit down, use a plate, no phone.',
+           fa:'نشسته، در بشقاب، بدون تلفون.'},
+      foundationWhy:{en:'<b>Weeks 1\u20132:</b> eat your normal breakfast. Two rules only: no sugary drinks, and a glass of water first.',
+                     fa:'<b>هفته ۱ و ۲:</b> ناشتای معمولی خود را بخور. فقط دو قانون: نوشیدنی شیرین نخور، و اول یک گیلاس آب.'} },
+
+    { start:6,
+      when:{en:'Before leaving home',fa:'پیش از بیرون رفتن'},
+      task:{en:'Pack lunch + fill water bottle',fa:'نان چاشت را بگیر + بوتل آب را پر کن'},
+      why:{en:'Packed food is what beats the vending machine and fast food.',
+           fa:'غذای خانگی یگانه راه فرار از فست‌فود است.'} },
+
+    { start:10,
+      when:{en:'Mid-morning',fa:'وسط صبح'},
+      task:{en:'Water check',fa:'آب یادت نرود'},
+      why:{en:'First bottle finished? Refill it.',
+           fa:'بوتل اول خلاص شد؟ دوباره پرش کن.'} },
+
+    { start:12, meal:'lunch',
+      when:{en:'Lunch break \u00b7 ~450 kcal',fa:'نان چاشت \u00b7 حدود ۴۵۰ کالری'},
+      task:{en:'Lunch',fa:'نان چاشت'},
+      why:{en:'Sit down, eat slowly \u2014 fullness takes ~20 minutes.',
+           fa:'نشسته و آهسته بخور \u2014 سیری حدود ۲۰ دقیقه وقت می‌گیرد.'},
+      foundationWhy:{en:'<b>Weeks 1\u20132:</b> normal lunch, sitting down, with water. No soda or juice with it.',
+                     fa:'<b>هفته ۱ و ۲:</b> نان چاشت معمولی، نشسته، با آب. بدون نوشابه یا آب‌میوه.'} },
+
+    { start:15, meal:'snack',
+      when:{en:'Afternoon \u00b7 ~125 kcal',fa:'بعد از چاشت \u00b7 حدود ۱۲۵ کالری'},
+      task:{en:'Planned snack + water',fa:'غذای سبک + آب'},
+      why:{en:'Measured, not from the bag.',
+           fa:'اندازه‌شده، نه از داخل پاکت.'},
+      foundationWhy:{en:'<b>Weeks 1\u20132:</b> if you snack, make it fruit, yogurt, or eggs \u2014 with water.',
+                     fa:'<b>هفته ۱ و ۲:</b> اگر غذای سبک می‌خوری، میوه، ماست یا تخم باشد \u2014 با آب.'} },
+
+    { start:17, walk:true,
+      when:{en:'After work',fa:'بعد از کار'},
+      task:{en:'Walk',fa:'قدم بزن'},
+      why:{en:'Brisk pace \u2014 you can talk but not sing. A podcast or phone call makes it fly.',
+           fa:'تیز قدم بزن \u2014 بتوانی گپ بزنی ولی نتوانی آواز بخوانی. با پادکست یا تلفون زود تیر می‌شود.'} },
+
+    { start:17, days:[1,3,6], minWeek:5,
+      when:{en:'Strength day \u00b7 Mon Wed Sat',fa:'ورزش قدرتی \u00b7 دوشنبه چهارشنبه شنبه'},
+      task:{en:'20-minute home workout',fa:'ورزش ۲۰ دقیقه‌ای در خانه'},
+      why:{en:'Rest 60\u201390 seconds between sets. No equipment.',
+           fa:'بین ست‌ها ۶۰ تا ۹۰ ثانیه استراحت. بدون سامان.'},
+      list:{
+        en:[
+          ['\uD83E\uDE91','Chair squats \u2014 3 \u00d7 10'],
+          ['\uD83E\uDDF1','Wall push-ups \u2014 3 \u00d7 8'],
+          ['\uD83C\uDF09','Glute bridges \u2014 3 \u00d7 12'],
+          ['\uD83D\uDEB6','Standing marches \u2014 3 \u00d7 20'],
+          ['\uD83D\uDCAA','Knee plank \u2014 3 \u00d7 15\u201320 s']
+        ],
+        fa:[
+          ['\uD83E\uDE91','اسکوات با چوکی \u2014 ۳ \u00d7 ۱۰'],
+          ['\uD83E\uDDF1','شنا روی دیوار \u2014 ۳ \u00d7 ۸'],
+          ['\uD83C\uDF09','پل باسن \u2014 ۳ \u00d7 ۱۲'],
+          ['\uD83D\uDEB6','درجا قدم زدن \u2014 ۳ \u00d7 ۲۰'],
+          ['\uD83D\uDCAA','پلانک روی زانو \u2014 ۳ \u00d7 ۱۵ تا ۲۰ ثانیه']
+        ]
+      } },
+
+    { start:15, days:[0],
+      when:{en:'Sunday prep',fa:'آمادگی یکشنبه'},
+      task:{en:'Meal-prep 90 minutes',fa:'۹۰ دقیقه غذای هفته را جور کن'},
+      why:{en:'<b>This one habit carries the whole week.</b>',
+           fa:'<b>همین یک عادت، تمام هفته را نجات می‌دهد.</b>'},
+      list:{
+        en:[
+          ['\uD83C\uDF5A','Cook a pot of rice (\u00bd cup per container)'],
+          ['\uD83E\uDD5A','Boil 8 eggs for the week'],
+          ['\uD83C\uDF72','One big pot: chicken + vegetables, or lentil dal'],
+          ['\uD83E\uDDF3','Fill 4\u20135 lunch containers']
+        ],
+        fa:[
+          ['\uD83C\uDF5A','یک دیگ برنج بپز (هر قطی \u00bd پیمانه)'],
+          ['\uD83E\uDD5A','۸ تخم برای هفته جوش بده'],
+          ['\uD83C\uDF72','یک دیگ کلان: مرغ با ترکاری یا دال'],
+          ['\uD83E\uDDF3','۴ تا ۵ قطی برای نان چاشت پر کن']
+        ]
+      } },
+
+    { start:18, meal:'dinner',
+      when:{en:'Dinner \u00b7 ~550 kcal',fa:'نان شب \u00b7 حدود ۵۵۰ کالری'},
+      task:{en:'Dinner',fa:'نان شب'},
+      why:{en:'Half the plate vegetables, always.',
+           fa:'همیشه نیم بشقاب ترکاری باشد.'},
+      foundationWhy:{en:'<b>Weeks 1\u20132:</b> normal dinner, water to drink, stop when comfortably full \u2014 not stuffed.',
+                     fa:'<b>هفته ۱ و ۲:</b> نان شب معمولی، نوشیدنی فقط آب، وقتی سیر شدی دست بکش.'} },
+
+    { start:20,
+      when:{en:'Evening',fa:'عصر'},
+      task:{en:'Close the kitchen',fa:'آشپزخانه را بسته کن'},
+      why:{en:'If truly hungry: <b>one</b> snack (apple, yogurt, or tea). Then done for the night.',
+           fa:'اگر واقعاً گرسنه هستی: فقط <b>یک</b> غذای سبک (سیب، ماست یا چای). بعد آشپزخانه تا صبا بسته است.'} },
+
+    { start:21,
+      when:{en:'Wind-down',fa:'پایان روز'},
+      task:{en:'Set up tomorrow + lights out',fa:'صبا را آماده کن + بخواب'},
+      why:{en:'Set the <b>bedtime alarm</b>. 7\u20138 hours \u2014 sleep is a fat-loss tool.',
+           fa:'الارم خواب را عیار کن. ۷ تا ۸ ساعت \u2014 <b>خواب خودش وسیله کم کردن وزن است</b>.'} }
+  ];
+
+  /* ================= program position ================= */
+  function startDateObj() {
+    var d = new Date(state.startDate + 'T00:00:00');
+    return isNaN(d.getTime()) ? new Date() : d;
+  }
+  function daysSinceStart() {
+    var days = Math.floor((new Date() - startDateObj()) / 86400000);
+    return days < 0 ? 0 : days;
+  }
+  function programWeek() {
+    var w = Math.floor(daysSinceStart() / 7) + 1;
+    return (w > 12) ? 12 : w;
+  }
+  function programDay() {
+    var d = daysSinceStart() + 1;
+    return (d > 84) ? 84 : d;
+  }
+  function phaseIdx(w) { if (w<=2) return 0; if (w<=4) return 1; if (w<=8) return 2; return 3; }
+  function walkMinutes(w) { if (w<=2) return 15; if (w<=4) return 25; if (w<=8) return 30; return 40; }
+
+  /* ================= today's steps + persistence ================= */
+  var doneFlags = [], todaysSteps = [], week = 1;
+  var countTargetHour = null;
+
+  function stepsFor(w, dow) {
+    var out = [];
+    for (var i = 0; i < PLAN.length; i++) {
+      var s = PLAN[i];
+      if (s.days && s.days.indexOf(dow) === -1) continue;
+      if (s.minWeek && w < s.minWeek) continue;
+      out.push(s);
+    }
+    out.sort(function (a, b) { return a.start - b.start; });
+    return out;
+  }
+
+  function buildToday() {
+    week = programWeek();
+    var now = new Date();
+    todaysSteps = stepsFor(week, now.getDay());
+    doneFlags = [];
+    for (var j = 0; j < todaysSteps.length; j++) doneFlags.push(false);
+    /* auto-skip past windows (fresh open mid-day) */
+    var h = now.getHours();
+    for (var k = 0; k < todaysSteps.length; k++) {
+      var nextStart = (k + 1 < todaysSteps.length) ? todaysSteps[k + 1].start : 24;
+      if (h >= nextStart && nextStart !== todaysSteps[k].start) doneFlags[k] = true;
+    }
+    /* restore saved checkmarks for today */
+    var rec = state.days[dateKey(now)];
+    if (rec && rec.done) {
+      for (var r = 0; r < rec.done.length; r++) {
+        if (rec.done[r] < doneFlags.length) doneFlags[rec.done[r]] = true;
+      }
+    }
+    saveToday();
+  }
+
+  function saveToday() {
+    var key = dateKey(new Date());
+    var done = [];
+    for (var i = 0; i < doneFlags.length; i++) if (doneFlags[i]) done.push(i);
+    var complete = (done.length === doneFlags.length && doneFlags.length > 0);
+    state.days[key] = { done: done, total: doneFlags.length, complete: complete };
+    saveState();
+    return complete;
+  }
+
+  function currentIndex() {
+    for (var i = 0; i < doneFlags.length; i++) if (!doneFlags[i]) return i;
+    return -1;
+  }
+
+  function streakCount() {
+    var c = 0;
+    var d = new Date();
+    var rec = state.days[dateKey(d)];
+    if (!(rec && rec.complete)) d.setDate(d.getDate() - 1);
+    while (true) {
+      var r = state.days[dateKey(d)];
+      if (r && r.complete) { c++; d.setDate(d.getDate() - 1); }
+      else break;
+      if (c > 400) break;
+    }
+    return c;
+  }
+
+  /* ================= Google Sheets webhook ================= */
+  function sendHook(type, payload) {
+    if (!state.webhook) return;
+    var body = { type: type, date: dateKey(new Date()), time: new Date().toTimeString().slice(0, 8) };
+    for (var k in payload) body[k] = payload[k];
+    try {
+      fetch(state.webhook, {
+        method: 'POST', mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(body)
+      })['catch'](function () {});
+    } catch (e) {}
+  }
+
+  function markDone(idx, skipped) {
+    doneFlags[idx] = true;
+    var s = todaysSteps[idx];
+    sendHook(skipped ? 'step_skip' : 'step_done', { task: s.task.en });
+    var complete = saveToday();
+    if (complete) sendHook('day_complete', { streak: streakCount() });
+    render();
+  }
+
+  /* ================= live h:m:s countdown ================= */
+  function hmsUntil(hour) {
+    var n = new Date();
+    var sec = hour * 3600 - (n.getHours() * 3600 + n.getMinutes() * 60 + n.getSeconds());
+    if (sec <= 0) return null;
+    var h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
+    var str = pad(h) + ':' + pad(m) + ':' + pad(s);
+    return (lang === 'fa') ? faNum(str) : str;
+  }
+  function tickCountdown() {
+    var el = document.getElementById('cd');
+    if (!el || countTargetHour === null) return;
+    var cap = document.getElementById('cdCap');
+    var v = hmsUntil(countTargetHour);
+    if (v === null) {
+      countTargetHour = null;
+      render();
+      return;
+    }
+    el.textContent = v;
+    if (cap) cap.textContent = UI[lang].capStarts;
+  }
+
+  /* ================= reminders (while app open / installed) ================= */
+  function checkNotify() {
+    if (!state.notif) return;
+    if (!('Notification' in window) || Notification.permission !== 'granted') return;
+    var n = new Date();
+    var idx = currentIndex();
+    if (idx < 0) return;
+    var s = todaysSteps[idx];
+    if (n.getHours() !== s.start || n.getMinutes() >= 3) return;
+    var key = dateKey(n) + '-' + s.start;
+    if (state.notified[key]) return;
+    state.notified[key] = 1;
+    saveState();
+    var title = s.walk
+      ? ((lang === 'fa') ? faNum(walkMinutes(week)) + ' دقیقه قدم بزن' : 'Walk ' + walkMinutes(week) + ' minutes')
+      : s.task[lang];
+    var body = s.meal ? ROT[s.meal][n.getDay()][lang] : stripTags(s.why[lang]);
+    try { new Notification(title, { body: body }); } catch (e) {}
+  }
+
+  /* ================= sky ================= */
+  function paintSky() {
+    var h = new Date().getHours();
+    var r = document.documentElement.style;
+    var night = false;
+    if (h >= 5 && h < 10) {
+      r.setProperty('--sky-a','#fff3e0'); r.setProperty('--sky-b','#ffdfba');
+      r.setProperty('--accent','#d97b2b'); r.setProperty('--accent-deep','#a5561d');
+      r.setProperty('--glow','rgba(217,123,43,.12)');
+    } else if (h >= 10 && h < 15) {
+      r.setProperty('--sky-a','#eaf5fb'); r.setProperty('--sky-b','#cfe9f6');
+      r.setProperty('--accent','#1e7fae'); r.setProperty('--accent-deep','#155f83');
+      r.setProperty('--glow','rgba(30,127,174,.1)');
+    } else if (h >= 15 && h < 19) {
+      r.setProperty('--sky-a','#fdf0df'); r.setProperty('--sky-b','#fbd9b4');
+      r.setProperty('--accent','#c2571f'); r.setProperty('--accent-deep','#96410f');
+      r.setProperty('--glow','rgba(194,87,31,.12)');
+    } else {
+      r.setProperty('--sky-a','#2d2740'); r.setProperty('--sky-b','#1c1830');
+      r.setProperty('--accent','#b98ef5'); r.setProperty('--accent-deep','#d9c3ff');
+      r.setProperty('--glow','rgba(185,142,245,.16)');
+      night = true;
+    }
+    document.body.className = (night ? 'night' : '') + (lang === 'fa' ? ' fa' : '');
+  }
+  function daypartIdx(h) { if (h<5) return 0; if (h<12) return 1; if (h<17) return 2; if (h<21) return 3; return 0; }
+
+  /* ================= main render ================= */
+  function render() {
+    paintSky();
+    var t = UI[lang];
+    var now = new Date();
+    var dow = now.getDay();
+
+    document.documentElement.dir = (lang === 'fa') ? 'rtl' : 'ltr';
+    document.documentElement.lang = lang;
+
+    var hh = now.getHours() % 12; if (hh === 0) hh = 12;
+    var mm = pad(now.getMinutes());
+    var clockStr;
+    if (lang === 'fa') {
+      var H = now.getHours(), suf;
+      if (H >= 20 || H < 5) suf = 'شب';
+      else if (H < 12) suf = 'صبح';
+      else if (H < 16) suf = 'چاشت';
+      else suf = 'عصر';
+      clockStr = faNum(hh) + ':' + faNum(mm) + ' <small>' + suf + '</small>';
+    } else {
+      clockStr = hh + ':' + mm + ' <small>' + (now.getHours() >= 12 ? 'PM' : 'AM') + '</small>';
+    }
+    document.getElementById('clock').innerHTML = clockStr;
+    document.getElementById('daypart').textContent = t.dayparts[daypartIdx(now.getHours())];
+    document.getElementById('weekBadge').textContent = t.week(week, programDay(), t.phases[phaseIdx(week)]);
+    document.getElementById('langBtn').textContent = (lang === 'en') ? 'فارسی دری' : 'English';
+
+    var stk = streakCount();
+    var chip = document.getElementById('streakChip');
+    if (stk > 0) { chip.style.display = 'inline-block'; chip.textContent = t.streak(stk); }
+    else chip.style.display = 'none';
+
+    /* modal labels + settings */
+    document.getElementById('mTitle').textContent = t.mTitle;
+    document.getElementById('mHint').textContent = t.mHint;
+    document.getElementById('optDayTxt').innerHTML = t.optDay;
+    document.getElementById('optWeekTxt').innerHTML = t.optWeek;
+    document.getElementById('optProgTxt').innerHTML = t.optProg;
+    document.getElementById('optGrocTxt').innerHTML = t.optGroc;
+    document.getElementById('pickTitle').textContent = t.pickTitle;
+    document.getElementById('optPickTxt').textContent = t.optPick;
+    document.getElementById('setTitle').textContent = t.setTitle;
+    document.getElementById('lblStart').textContent = t.lblStart;
+    document.getElementById('lblHook').textContent = t.lblHook;
+    document.getElementById('setNote').textContent = t.setNote;
+    document.getElementById('mClose').textContent = t.mClose;
+    var nb = document.getElementById('notifBtn');
+    var notifOn = state.notif && ('Notification' in window) && Notification.permission === 'granted';
+    nb.textContent = notifOn ? t.notifOn : t.notifOff;
+    nb.className = 'togl' + (notifOn ? ' on' : '');
+    var inStart = document.getElementById('inStart');
+    if (document.activeElement !== inStart) inStart.value = state.startDate;
+    var inHook = document.getElementById('inHook');
+    if (document.activeElement !== inHook) inHook.value = state.webhook;
+
+    /* pick-a-day selects */
+    var pw = document.getElementById('pickWeek'), pd = document.getElementById('pickDay');
+    var pwVal = pw.value || String(week), pdVal = pd.value || String(dow);
+    var opts = '';
+    for (var w2 = 1; w2 <= 12; w2++) opts += '<option value="' + w2 + '">' + t.weekWord + ' ' + num(w2) + '</option>';
+    pw.innerHTML = opts;
+    pw.value = pwVal;
+    opts = '';
+    for (var d2 = 0; d2 < 7; d2++) opts += '<option value="' + d2 + '">' + t.days[d2] + '</option>';
+    pd.innerHTML = opts;
+    pd.value = pdVal;
+
+    var idx = currentIndex();
+    var doneCount = 0;
+    for (var i = 0; i < doneFlags.length; i++) if (doneFlags[i]) doneCount++;
+
+    var dotsHtml = '';
+    for (var d = 0; d < todaysSteps.length; d++) {
+      dotsHtml += '<span class="dot' + (doneFlags[d] ? ' done' : '') + (d === idx ? ' now' : '') + '"></span>';
+    }
+    document.getElementById('dots').innerHTML = dotsHtml;
+    document.getElementById('footer').textContent = t.steps(doneCount, todaysSteps.length);
+
+    var stage = document.getElementById('stage');
+    countTargetHour = null;
+
+    if (idx === -1) {
+      stage.innerHTML =
+        '<div class="card celebrate"><div class="big">\uD83C\uDF19</div>' +
+        '<h2>' + t.dayDone + '</h2><p>' + t.dayDoneMsg + '</p></div>';
+      return;
+    }
+
+    var s = todaysSteps[idx];
+    var foundation = (week <= 2);
+    var early = now.getHours() < s.start;
+    var timing = early ? t.comingUp + ' ' + t.hourFmt(s.start) : s.when[lang];
+
+    var taskTxt = s.task[lang];
+    if (s.walk) {
+      var wmn = walkMinutes(week);
+      taskTxt = (lang === 'fa') ? faNum(wmn) + ' دقیقه قدم بزن' : 'Walk ' + wmn + ' minutes';
+    }
+    var whyTxt = (foundation && s.foundationWhy) ? s.foundationWhy[lang] : s.why[lang];
+
+    /* weight entry on the scale card */
+    var weighHtml = '';
+    if (s.weigh) {
+      var savedKg = state.weights[dateKey(now)];
+      weighHtml =
+        '<div class="wrow">' +
+          '<input type="number" inputmode="decimal" step="0.1" min="30" max="250" id="wIn" placeholder="' + t.wPlaceholder + '">' +
+          '<button id="wSave">' + t.wSave + '</button>' +
+        '</div>' +
+        (savedKg ? '<div class="wsaved">' + t.wSavedToday(savedKg) + '</div>' : '');
+    }
+
+    var plateHtml = '';
+    if (s.meal && !foundation) {
+      var item = ROT[s.meal][dow];
+      var pic = item.img
+        ? '<img src="' + item.img + '" alt="" loading="lazy">'
+        : item.pic;
+      plateHtml =
+        '<div class="plate"><div class="pic">' + pic + '</div>' +
+        '<div class="txt"><span class="lbl">' + t.todaysPlate + '</span>' + item[lang] + '</div></div>' +
+        '<div class="swap">' + t.swap + '</div>';
+    }
+
+    var listHtml = '';
+    if (s.list) {
+      listHtml = '<ul class="menu">';
+      var items = s.list[lang];
+      for (var m2 = 0; m2 < items.length; m2++) {
+        listHtml += '<li><span class="ic">' + items[m2][0] + '</span>' + items[m2][1] + '</li>';
+      }
+      listHtml += '</ul>';
+    }
+
+    var cdSpan = '<span class="count"><span class="digits" id="cd">--:--:--</span><span class="cap" id="cdCap"></span></span>';
+    var nextHtml = '';
+    if (early) {
+      countTargetHour = s.start;
+      nextHtml = '<div class="next">' + cdSpan + '</div>';
+    } else if (idx + 1 < todaysSteps.length) {
+      var nx = todaysSteps[idx + 1];
+      countTargetHour = nx.start;
+      var nxTask = nx.walk
+        ? ((lang === 'fa') ? faNum(walkMinutes(week)) + ' دقیقه قدم بزن' : 'Walk ' + walkMinutes(week) + ' min')
+        : nx.task[lang];
+      nextHtml =
+        '<div class="next">' + t.next + ': <b>' + nxTask + '</b> \u00b7 ' + t.around + ' ' + t.hourFmt(nx.start) +
+        '<br>' + cdSpan + '</div>';
+    }
+
+    stage.innerHTML =
+      '<div class="card">' +
+        '<div class="when">' + timing + '</div>' +
+        '<div class="task">' + taskTxt + '</div>' +
+        '<div class="why">' + whyTxt + '</div>' +
+        weighHtml + plateHtml + listHtml +
+        '<button class="done-btn" id="doneBtn">' + t.done + '</button>' +
+        '<button class="skip" id="skipBtn">' + t.skip + '</button>' +
+      '</div>' + nextHtml;
+
+    document.getElementById('doneBtn').addEventListener('click', function () { markDone(idx, false); });
+    document.getElementById('skipBtn').addEventListener('click', function () { markDone(idx, true); });
+
+    var wSaveBtn = document.getElementById('wSave');
+    if (wSaveBtn) {
+      wSaveBtn.addEventListener('click', function () {
+        var v = parseFloat(document.getElementById('wIn').value);
+        if (!v || v < 30 || v > 250) return;
+        state.weights[dateKey(new Date())] = Math.round(v * 10) / 10;
+        saveState();
+        sendHook('weight', { kg: v });
+        render();
+      });
+    }
+
+    tickCountdown();
+  }
+
+  /* ================= printable / viewer content ================= */
+  function walkLabel(w) {
+    var wm = walkMinutes(w);
+    return (lang === 'fa') ? faNum(wm) + ' دقیقه' : wm + ' min';
+  }
+
+  function openViewer(inner) {
+    var pa = document.getElementById('printArea');
+    document.getElementById('paContent').innerHTML = inner;
+    pa.dir = (lang === 'fa') ? 'rtl' : 'ltr';
+    var t = UI[lang];
+    document.getElementById('paPrint').textContent = t.paPrint;
+    document.getElementById('paClose').textContent = t.mClose;
+    document.getElementById('paNote').textContent = '';
+    closeModal();
+    pa.className = 'open';
+    pa.scrollTop = 0;
+  }
+
+  function dailyHTML(w, dow, titleSuffix) {
+    var t = UI[lang], p = t.pdf;
+    var steps = stepsFor(w, dow);
+    var foundation = (w <= 2);
+    var html = '<h1>' + p.dailyTitle + ' \u2014 ' + titleSuffix + '</h1>' +
+      '<div class="sub">' + t.week(w, ((w - 1) * 7 + 1), t.phases[phaseIdx(w)]) + '</div>' +
+      '<div class="rules">' + p.dailyRules + '</div>' +
+      '<table><tr><th style="width:16%">' + p.time + '</th><th style="width:28%">' + p.step + '</th><th>' + p.details + '</th></tr>';
+    for (var i = 0; i < steps.length; i++) {
+      var s = steps[i];
+      var taskTxt = s.walk
+        ? ((lang === 'fa') ? faNum(walkMinutes(w)) + ' دقیقه قدم بزن' : 'Walk ' + walkMinutes(w) + ' minutes')
+        : s.task[lang];
+      var det = (foundation && s.foundationWhy) ? s.foundationWhy[lang] : s.why[lang];
+      if (s.meal && !foundation) det = ROT[s.meal][dow][lang] + ' \u2014 ' + det;
+      if (s.list) {
+        var arr = s.list[lang], parts = [];
+        for (var j = 0; j < arr.length; j++) parts.push(arr[j][1]);
+        det = parts.join(' \u00b7 ');
+      }
+      html += '<tr><td>' + t.hourFmt(s.start) + '</td><td><b>' + taskTxt + '</b></td><td>' + stripTags(det) + '</td></tr>';
+    }
+    html += '</table><div class="foot">' + p.foot + '</div>';
+    return html;
+  }
+
+  function showDaily() {
+    var now = new Date();
+    openViewer(dailyHTML(week, now.getDay(), UI[lang].days[now.getDay()]));
+  }
+  function showPicked() {
+    var w = parseInt(document.getElementById('pickWeek').value, 10) || 1;
+    var d = parseInt(document.getElementById('pickDay').value, 10) || 0;
+    openViewer(dailyHTML(w, d, UI[lang].weekWord + ' ' + num(w) + ' \u00b7 ' + UI[lang].days[d]));
+  }
+
+  function showWeekly() {
+    var t = UI[lang], p = t.pdf;
+    var html = '<h1>' + p.weeklyTitle + '</h1>' +
+      '<div class="sub">' + t.week(week, programDay(), t.phases[phaseIdx(week)]) + '</div>' +
+      '<div class="rules">' + p.weeklyRules + '</div>' +
+      '<table><tr><th>' + p.day + '</th><th>' + p.breakfast + '</th><th>' + p.lunch + '</th><th>' + p.snack + '</th><th>' + p.dinner + '</th><th>' + p.exercise + '</th></tr>';
+    for (var d = 0; d < 7; d++) {
+      var ex = walkLabel(week);
+      if (week >= 5 && (d === 1 || d === 3 || d === 6)) {
+        ex += ' + ' + ((lang === 'fa') ? 'ورزش ۲۰ دقیقه' : '20 min strength');
+      }
+      html += '<tr><td><b>' + t.days[d] + '</b></td>' +
+        '<td>' + ROT.breakfast[d][lang] + '</td>' +
+        '<td>' + ROT.lunch[d][lang] + '</td>' +
+        '<td>' + ROT.snack[d][lang] + '</td>' +
+        '<td>' + ROT.dinner[d][lang] + '</td>' +
+        '<td>' + ex + '</td></tr>';
+    }
+    html += '</table><div class="foot">' + p.foot + '</div>';
+    openViewer(html);
+  }
+
+  function showProgram() {
+    var t = UI[lang], p = t.pdf;
+    var focus = {
+      en: ['No sugary drinks \u00b7 water before meals \u00b7 daily weigh-in \u00b7 15-min walks',
+           'Full meal plan begins \u00b7 Sunday meal prep \u00b7 25-min walks',
+           'Add 20-min strength (Mon/Wed/Sat) \u00b7 30-min walks \u00b7 clothes looser',
+           '40-min walks \u00b7 keep every habit \u00b7 finish strong \u00b7 plan the next 12 weeks'],
+      fa: ['نوشیدنی شیرین نخور \u00b7 پیش از غذا آب \u00b7 وزن روزانه \u00b7 قدم زدن ۱۵ دقیقه',
+           'شروع برنامه کامل غذایی \u00b7 جور کردن غذا در یکشنبه \u00b7 قدم زدن ۲۵ دقیقه',
+           'شروع ورزش قدرتی (دوشنبه/چهارشنبه/شنبه) \u00b7 قدم زدن ۳۰ دقیقه',
+           'قدم زدن ۴۰ دقیقه \u00b7 همه عادت‌ها را نگه دار \u00b7 قوی تمام کن']
+    };
+    var html = '<h1>' + p.progTitle + '</h1>' +
+      '<div class="sub">' + p.foot + '</div>' +
+      '<table><tr><th>' + p.weekCol + '</th><th>' + p.phase + '</th><th>' + p.walking + '</th><th>' + p.strengthCol + '</th><th>' + p.focus + '</th></tr>';
+    for (var w = 1; w <= 12; w++) {
+      var ph = phaseIdx(w);
+      html += '<tr><td><b>' + num(w) + '</b></td>' +
+        '<td>' + t.phases[ph] + '</td>' +
+        '<td>' + walkLabel(w) + '</td>' +
+        '<td>' + (w >= 5 ? p.yes : p.no) + '</td>' +
+        '<td>' + focus[lang][ph] + '</td></tr>';
+    }
+    html += '</table><div class="foot">' + p.foot + '</div>';
+    openViewer(html);
+  }
+
+  function showGrocery() {
+    var t = UI[lang], p = t.pdf;
+    var html = '<h1>' + p.grocTitle + '</h1>' +
+      '<div class="sub">' + p.foot + '</div>' +
+      '<div class="rules">' + p.grocRules + '</div>' +
+      '<table><tr><th>' + p.item + '</th><th style="width:38%">' + p.qty + '</th></tr>';
+    for (var i = 0; i < GROC.length; i++) {
+      var row = GROC[i][lang];
+      html += '<tr><td>' + row[0] + '</td><td>' + row[1] + '</td></tr>';
+    }
+    html += '</table><div class="foot">' + p.foot + '</div>';
+    openViewer(html);
+  }
+
+  /* ================= weight chart ================= */
+  function showChart() {
+    var t = UI[lang];
+    var keys = [];
+    for (var k in state.weights) keys.push(k);
+    keys.sort();
+    if (keys.length === 0) {
+      openViewer('<h1>' + t.chartTitle + '</h1><div class="rules">' + t.chartEmpty + '</div>');
+      return;
+    }
+    var start = startDateObj();
+    var pts = [];
+    var minV = 1e9, maxV = -1e9, maxDay = 83;
+    for (var i = 0; i < keys.length; i++) {
+      var d = new Date(keys[i] + 'T00:00:00');
+      var day = Math.round((d - start) / 86400000);
+      if (day < 0) day = 0;
+      if (day > maxDay) maxDay = day;
+      var v = state.weights[keys[i]];
+      if (v < minV) minV = v;
+      if (v > maxV) maxV = v;
+      pts.push({ day: day, v: v });
+    }
+    if (maxV - minV < 2) { minV -= 1; maxV += 1; }
+    minV -= 0.5; maxV += 0.5;
+
+    var W = 840, H = 380, L = 52, R = 16, T = 20, B = 40;
+    function fx(d) { return L + (d / maxDay) * (W - L - R); }
+    function fy(v) { return T + (maxV - v) / (maxV - minV) * (H - T - B); }
+
+    /* daily polyline + dots */
+    var dailyPts = '', dots = '';
+    for (var j = 0; j < pts.length; j++) {
+      var x = fx(pts[j].day).toFixed(1), y = fy(pts[j].v).toFixed(1);
+      dailyPts += x + ',' + y + ' ';
+      dots += '<circle cx="' + x + '" cy="' + y + '" r="3.5" fill="#6d6678"/>';
+    }
+
+    /* weekly averages */
+    var weeks = {};
+    for (var j2 = 0; j2 < pts.length; j2++) {
+      var wk = Math.floor(pts[j2].day / 7);
+      if (!weeks[wk]) weeks[wk] = { sum: 0, n: 0 };
+      weeks[wk].sum += pts[j2].v; weeks[wk].n++;
+    }
+    var wkPts = '', wkDots = '', lastAvg = null;
+    var wkKeys = [];
+    for (var wkk in weeks) wkKeys.push(parseInt(wkk, 10));
+    wkKeys.sort(function (a, b) { return a - b; });
+    for (var q = 0; q < wkKeys.length; q++) {
+      var wq = wkKeys[q];
+      var avg = weeks[wq].sum / weeks[wq].n;
+      lastAvg = avg;
+      var xa = fx(wq * 7 + 3).toFixed(1), ya = fy(avg).toFixed(1);
+      wkPts += xa + ',' + ya + ' ';
+      wkDots += '<circle cx="' + xa + '" cy="' + ya + '" r="5" fill="#d97b2b"/>';
+    }
+
+    /* axes */
+    var grid = '', yl = '';
+    for (var g = 0; g <= 4; g++) {
+      var vv = minV + (maxV - minV) * g / 4;
+      var gy = fy(vv).toFixed(1);
+      grid += '<line x1="' + L + '" y1="' + gy + '" x2="' + (W - R) + '" y2="' + gy + '" stroke="#e8e0d2" stroke-width="1"/>';
+      yl += '<text x="' + (L - 8) + '" y="' + (parseFloat(gy) + 4) + '" font-size="12" fill="#777" text-anchor="end">' + num(vv.toFixed(1)) + '</text>';
+    }
+    var xl = '';
+    for (var xw = 1; xw <= Math.ceil((maxDay + 1) / 7); xw += 2) {
+      var xx = fx((xw - 1) * 7 + 3).toFixed(1);
+      xl += '<text x="' + xx + '" y="' + (H - 12) + '" font-size="12" fill="#777" text-anchor="middle">' + ((lang === 'fa') ? 'ه' + faNum(xw) : 'W' + xw) + '</text>';
+    }
+
+    var first = pts[0].v, last = pts[pts.length - 1].v;
+    var diff = Math.round((last - first) * 10) / 10;
+    var diffTxt = (diff > 0 ? '+' : '') + diff;
+
+    var html =
+      '<h1>' + t.chartTitle + '</h1>' +
+      '<div class="sub">' + UI[lang].week(week, programDay(), UI[lang].phases[phaseIdx(week)]) + '</div>' +
+      '<div class="stats">' +
+        '<div class="stat"><b>' + num(first) + ' ' + t.wUnit + '</b><span>' + t.stFirst + '</span></div>' +
+        '<div class="stat"><b>' + num(last) + ' ' + t.wUnit + '</b><span>' + t.stLast + '</span></div>' +
+        '<div class="stat"><b>' + num(diffTxt) + ' ' + t.wUnit + '</b><span>' + t.stDiff + '</span></div>' +
+        (lastAvg !== null ? '<div class="stat"><b>' + num((Math.round(lastAvg * 10) / 10)) + ' ' + t.wUnit + '</b><span>' + t.stAvg + '</span></div>' : '') +
+      '</div>' +
+      '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img">' +
+        grid + yl + xl +
+        (pts.length > 1 ? '<polyline points="' + dailyPts.trim() + '" fill="none" stroke="#b7aecb" stroke-width="1.5"/>' : '') +
+        dots +
+        (wkKeys.length > 1 ? '<polyline points="' + wkPts.trim() + '" fill="none" stroke="#d97b2b" stroke-width="3.5" stroke-linejoin="round"/>' : '') +
+        wkDots +
+      '</svg>' +
+      '<div class="foot">\u25CF ' + t.legDaily + ' \u00b7 <span style="color:#d97b2b">\u25CF</span> ' + t.legWeekly + '</div>';
+    openViewer(html);
+  }
+
+  /* ================= viewer print button ================= */
+  var printFired = false;
+  window.addEventListener('beforeprint', function () { printFired = true; });
+  document.getElementById('paPrint').addEventListener('click', function () {
+    printFired = false;
+    try { window.print(); } catch (e) {}
+    setTimeout(function () {
+      if (!printFired) document.getElementById('paNote').textContent = UI[lang].paBlocked;
+    }, 500);
+  });
+  document.getElementById('paClose').addEventListener('click', function () {
+    document.getElementById('printArea').className = '';
+  });
+
+  /* ================= modal + settings wiring ================= */
+  function openModal() { render(); document.getElementById('modalBg').className = 'modal-bg open'; }
+  function closeModal() { document.getElementById('modalBg').className = 'modal-bg'; }
+
+  document.getElementById('schedBtn').addEventListener('click', openModal);
+  document.getElementById('chartBtn').addEventListener('click', showChart);
+  document.getElementById('mClose').addEventListener('click', closeModal);
+  document.getElementById('modalBg').addEventListener('click', function (e) {
+    if (e.target === this) closeModal();
+  });
+  document.getElementById('optDay').addEventListener('click', showDaily);
+  document.getElementById('optWeek').addEventListener('click', showWeekly);
+  document.getElementById('optProg').addEventListener('click', showProgram);
+  document.getElementById('optGroc').addEventListener('click', showGrocery);
+  document.getElementById('optPick').addEventListener('click', showPicked);
+
+  document.getElementById('inStart').addEventListener('change', function () {
+    if (this.value) {
+      state.startDate = this.value;
+      saveState();
+      buildToday();
+      render();
+    }
+  });
+  document.getElementById('inHook').addEventListener('change', function () {
+    state.webhook = this.value.trim();
+    saveState();
+  });
+  document.getElementById('notifBtn').addEventListener('click', function () {
+    if (!('Notification' in window)) return;
+    if (state.notif && Notification.permission === 'granted') {
+      state.notif = false; saveState(); render(); return;
+    }
+    Notification.requestPermission().then(function (p) {
+      state.notif = (p === 'granted');
+      saveState(); render();
+    });
+  });
+
+  document.getElementById('langBtn').addEventListener('click', function () {
+    lang = (lang === 'en') ? 'fa' : 'en';
+    state.lang = lang;
+    saveState();
+    render();
+  });
+
+  /* ================= welcome question (first open) ================= */
+  function maybeWelcome() {
+    if (state.startDate) return;
+    var inp = document.getElementById('welDate');
+    inp.value = dateKey(new Date());
+    inp.max = dateKey(new Date());
+    document.getElementById('welcome').className = 'open';
+  }
+  document.getElementById('welGo').addEventListener('click', function () {
+    var v = document.getElementById('welDate').value || dateKey(new Date());
+    state.startDate = v;
+    saveState();
+    document.getElementById('welcome').className = '';
+    buildToday();
+    render();
+  });
+
+  /* ================= timers ================= */
+  buildToday();
+  render();
+  maybeWelcome();
+  setInterval(tickCountdown, 1000);          /* live h:m:s */
+  setInterval(checkNotify, 30000);           /* reminders */
+  setInterval(function () {
+    var n = new Date();
+    if (n.getHours() === 0 && n.getMinutes() === 0) buildToday();
+    /* don't wipe the weight input mid-typing */
+    var ae = document.activeElement;
+    if (ae && (ae.tagName === 'INPUT' || ae.tagName === 'SELECT')) return;
+    if (document.getElementById('printArea').className === 'open') return;
+    if (document.getElementById('modalBg').className.indexOf('open') !== -1) return;
+    render();
+  }, 60000);
+})();
+</script>
+</body>
+</html>
