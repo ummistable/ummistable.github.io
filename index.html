@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>California Bridge Time-Series Engine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0e1116;          /* deep slate ground */
+  --panel:#161b22;       /* panel */
+  --panel-2:#1c232d;     /* raised */
+  --line:#2a333f;        /* hairline */
+  --line-2:#39465620;
+  --ink:#e6edf3;         /* primary text */
+  --ink-2:#9aa7b4;       /* secondary */
+  --ink-3:#63707d;       /* tertiary */
+  --good:#3fb950;        /* condition good */
+  --fair:#d9a441;        /* condition fair */
+  --poor:#e5534b;        /* condition poor */
+  --signal:#4ea1ff;      /* primary accent - the deterioration signal */
+  --signal-dim:#4ea1ff22;
+  --unknown:#5a6572;
+  --radius:4px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:var(--bg);color:var(--ink);
+  font-family:'Archivo',system-ui,sans-serif;
+  font-size:14px;line-height:1.45;
+  -webkit-font-smoothing:antialiased;
+  overflow:hidden;
+}
+.mono{font-family:'JetBrains Mono',monospace}
+button{font-family:inherit;cursor:pointer;color:inherit;background:none;border:none}
+input,select{font-family:inherit}
+
+/* ---------- Layout ---------- */
+#app{display:flex;flex-direction:column;height:100vh}
+header{
+  display:flex;align-items:baseline;gap:20px;
+  padding:12px 20px;border-bottom:1px solid var(--line);
+  background:var(--panel);flex-shrink:0;
+}
+header h1{
+  font-size:15px;font-weight:700;letter-spacing:-0.01em;
+  display:flex;align-items:baseline;gap:10px;
+}
+header h1 .glyph{color:var(--signal);font-weight:800}
+header .sub{color:var(--ink-3);font-size:12px;font-weight:400}
+header .spacer{flex:1}
+header .status{font-size:11.5px;color:var(--ink-2)}
+header .status b{color:var(--ink);font-weight:600}
+
+main{display:flex;flex:1;min-height:0}
+
+/* ---------- Filter rail ---------- */
+#rail{
+  width:280px;flex-shrink:0;background:var(--panel);
+  border-right:1px solid var(--line);
+  overflow-y:auto;padding:16px;
+}
+.fgroup{margin-bottom:20px}
+.fgroup > .flabel{
+  font-size:11px;font-weight:600;color:var(--ink-2);
+  letter-spacing:0.02em;margin-bottom:8px;display:block;
+}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{
+  padding:5px 10px;border:1px solid var(--line);border-radius:100px;
+  font-size:12px;color:var(--ink-2);background:var(--panel-2);
+  transition:all .12s;user-select:none;
+}
+.chip:hover{border-color:var(--ink-3);color:var(--ink)}
+.chip.on{background:var(--signal);border-color:var(--signal);color:#04111f;font-weight:600}
+.chip.on.g-good{background:var(--good);border-color:var(--good)}
+.chip.on.g-fair{background:var(--fair);border-color:var(--fair)}
+.chip.on.g-poor{background:var(--poor);border-color:var(--poor)}
+.frow{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.frow label{font-size:12.5px;color:var(--ink-2);flex:1}
+.frow input[type=number]{
+  width:72px;background:var(--bg);border:1px solid var(--line);
+  color:var(--ink);border-radius:var(--radius);padding:4px 7px;
+  font-family:'JetBrains Mono',monospace;font-size:12px;
+}
+.frow input[type=number]:focus{outline:none;border-color:var(--signal)}
+.toggle{display:flex;align-items:center;gap:8px;padding:6px 0;cursor:pointer}
+.toggle .box{
+  width:16px;height:16px;border:1px solid var(--line);border-radius:3px;
+  flex-shrink:0;position:relative;background:var(--bg);transition:all .12s;
+}
+.toggle.on .box{background:var(--signal);border-color:var(--signal)}
+.toggle.on .box::after{
+  content:"";position:absolute;left:4px;top:1px;width:5px;height:9px;
+  border:solid #04111f;border-width:0 2px 2px 0;transform:rotate(45deg);
+}
+.toggle span{font-size:12.5px;color:var(--ink-2)}
+.toggle:hover span{color:var(--ink)}
+.search-box{
+  width:100%;background:var(--bg);border:1px solid var(--line);
+  color:var(--ink);border-radius:var(--radius);padding:8px 10px;font-size:13px;
+}
+.search-box:focus{outline:none;border-color:var(--signal)}
+.reset{
+  width:100%;padding:8px;border:1px solid var(--line);border-radius:var(--radius);
+  color:var(--ink-2);font-size:12px;margin-top:4px;transition:all .12s;
+}
+.reset:hover{border-color:var(--poor);color:var(--poor)}
+
+/* ---------- Center ---------- */
+#center{flex:1;display:flex;flex-direction:column;min-width:0}
+#viewbar{
+  display:flex;align-items:center;gap:2px;padding:8px 16px;
+  border-bottom:1px solid var(--line);background:var(--panel);flex-shrink:0;
+}
+.vtab{
+  padding:6px 14px;font-size:12.5px;color:var(--ink-2);border-radius:var(--radius);
+  font-weight:500;transition:all .12s;
+}
+.vtab:hover{color:var(--ink);background:var(--panel-2)}
+.vtab.on{background:var(--signal-dim);color:var(--signal)}
+#viewbar .spacer{flex:1}
+.sortsel{
+  background:var(--bg);border:1px solid var(--line);color:var(--ink-2);
+  border-radius:var(--radius);padding:6px 10px;font-size:12px;
+}
+.sortsel:focus{outline:none;border-color:var(--signal)}
+
+#view{flex:1;min-height:0;position:relative}
+#map{position:absolute;inset:0}
+#listwrap{position:absolute;inset:0;overflow-y:auto}
+
+/* ---------- Table ---------- */
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+thead th{
+  position:sticky;top:0;background:var(--panel);z-index:2;
+  text-align:left;padding:9px 12px;font-weight:600;color:var(--ink-2);
+  border-bottom:1px solid var(--line);font-size:11.5px;white-space:nowrap;
+}
+tbody td{padding:8px 12px;border-bottom:1px solid var(--line-2)}
+tbody tr{cursor:pointer;transition:background .1s}
+tbody tr:hover{background:var(--panel)}
+tbody tr.sel{background:var(--signal-dim)}
+.gtag{
+  display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:2px;
+  vertical-align:middle;
+}
+.g-Good{background:var(--good)}.g-Fair{background:var(--fair)}
+.g-Poor{background:var(--poor)}.g-Unknown{background:var(--unknown)}
+.ratecell{font-weight:600}
+.rate-neg{color:var(--poor)}.rate-pos{color:var(--good)}.rate-flat{color:var(--ink-3)}
+.spark{display:inline-block;vertical-align:middle}
+.namecell{max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.namecell .carries{color:var(--ink-3);font-size:11px}
+.wtag{font-size:10px;color:var(--good);border:1px solid var(--good);border-radius:3px;padding:1px 4px;margin-left:4px}
+.badge-lo{font-weight:700}
+
+/* ---------- Detail panel ---------- */
+#detail{
+  width:0;flex-shrink:0;background:var(--panel);border-left:1px solid var(--line);
+  overflow-y:auto;transition:width .2s ease;
+}
+#detail.open{width:400px}
+.dpad{padding:18px;min-width:400px}
+.dclose{float:right;color:var(--ink-3);font-size:20px;line-height:1;padding:2px 6px}
+.dclose:hover{color:var(--ink)}
+.dtitle{font-size:16px;font-weight:700;letter-spacing:-0.01em;padding-right:30px;margin-bottom:2px}
+.dsub{color:var(--ink-3);font-size:12px;margin-bottom:16px}
+.dsection{margin-bottom:18px}
+.dsection h3{
+  font-size:11px;font-weight:600;color:var(--ink-2);margin-bottom:10px;
+  padding-bottom:5px;border-bottom:1px solid var(--line);
+}
+.kv{display:flex;justify-content:space-between;padding:4px 0;font-size:12.5px}
+.kv .k{color:var(--ink-3)}
+.kv .v{color:var(--ink);font-family:'JetBrains Mono',monospace;text-align:right}
+.bigspark{width:100%;height:120px;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:6px}
+.comp-legend{display:flex;gap:14px;font-size:11px;color:var(--ink-3);flex-wrap:wrap}
+.comp-legend .li{display:flex;align-items:center;gap:5px}
+.comp-legend .sw{width:12px;height:2px;border-radius:2px}
+.verdict{padding:12px;border-radius:var(--radius);font-size:13px;line-height:1.5;margin-bottom:16px}
+.verdict.crit{background:#e5534b18;border:1px solid #e5534b44;color:#f0a19b}
+.verdict.watch{background:#d9a44118;border:1px solid #d9a44144;color:#e5c07f}
+.verdict.stable{background:#3fb95015;border:1px solid #3fb95040;color:#8ed99a}
+.verdict.work{background:#4ea1ff15;border:1px solid #4ea1ff40;color:#a7cdff}
+.verdict b{font-weight:700}
+
+/* ---------- Overview view ---------- */
+#overview{position:absolute;inset:0;overflow-y:auto;padding:22px;display:none}
+.ovgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:24px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+.stat .num{font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:700;letter-spacing:-0.02em;line-height:1}
+.stat .lbl{font-size:12px;color:var(--ink-2);margin-top:8px}
+.stat .note{font-size:11px;color:var(--ink-3);margin-top:3px}
+.stat.accent .num{color:var(--signal)}
+.stat.poor .num{color:var(--poor)}
+.ovsection{margin-bottom:28px}
+.ovsection > h2{font-size:14px;font-weight:600;margin-bottom:14px;color:var(--ink)}
+.distrow{display:flex;align-items:center;gap:12px;margin-bottom:9px}
+.distrow .dlabel{width:130px;font-size:12.5px;color:var(--ink-2)}
+.distrow .dbar{flex:1;height:22px;background:var(--bg);border-radius:3px;overflow:hidden;display:flex}
+.distrow .dfill{height:100%;transition:width .4s}
+.distrow .dval{width:120px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-2)}
+
+/* loading */
+#loader{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;z-index:100}
+#loader .bar{width:220px;height:3px;background:var(--panel-2);border-radius:2px;overflow:hidden}
+#loader .fill{height:100%;background:var(--signal);width:30%;animation:load 1.1s ease-in-out infinite}
+@keyframes load{0%{margin-left:-30%}100%{margin-left:100%}}
+#loader .txt{font-size:12.5px;color:var(--ink-2)}
+
+/* leaflet dark tweaks */
+.leaflet-container{background:#0a0d12}
+.leaflet-popup-content-wrapper{background:var(--panel-2);color:var(--ink);border-radius:var(--radius);border:1px solid var(--line)}
+.leaflet-popup-tip{background:var(--panel-2)}
+.leaflet-popup-content{margin:10px 12px;font-size:12.5px}
+.leaflet-popup-content b{color:var(--ink)}
+.leaflet-bar a{background:var(--panel-2);color:var(--ink);border-color:var(--line)}
+.leaflet-bar a:hover{background:var(--panel)}
+.mlegend{
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+  padding:10px 12px;font-size:11.5px;color:var(--ink-2);line-height:1.7;
+}
+.mlegend .row{display:flex;align-items:center;gap:7px}
+.mlegend .dot{width:10px;height:10px;border-radius:50%}
+.count-note{font-size:11px;color:var(--ink-3);padding:10px 16px;border-top:1px solid var(--line);background:var(--panel);flex-shrink:0}
+
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--line);border-radius:5px;border:2px solid var(--bg)}
+::-webkit-scrollbar-thumb:hover{background:var(--ink-3)}
+
+@media(max-width:900px){
+  #rail{position:absolute;z-index:20;height:100%;transform:translateX(-100%);transition:transform .2s;box-shadow:4px 0 20px #0008}
+  #rail.show{transform:translateX(0)}
+  #detail.open{width:100%;position:absolute;z-index:25;height:100%}
+  .dpad{min-width:0;width:100%}
+}
+</style>
+</head>
+<body>
+<div id="loader">
+  <div class="txt" id="loadtxt">Loading California bridge inventory…</div>
+  <div class="bar"><div class="fill"></div></div>
+</div>
+
+<div id="app" style="display:none">
+  <header>
+    <h1><span class="glyph">▚</span> California Bridge Engine <span class="sub">NBI time-series · 2019–2025</span></h1>
+    <div class="spacer"></div>
+    <div class="status" id="status"></div>
+  </header>
+
+  <main>
+    <aside id="rail">
+      <div class="fgroup">
+        <input class="search-box" id="search" placeholder="Search name, route, ID, county…">
+      </div>
+
+      <div class="fgroup">
+        <span class="flabel">Condition (lowest component)</span>
+        <div class="chips" id="gfpChips">
+          <span class="chip g-good" data-g="Good">Good</span>
+          <span class="chip g-fair" data-g="Fair">Fair</span>
+          <span class="chip g-poor" data-g="Poor">Poor</span>
+        </div>
+      </div>
+
+      <div class="fgroup">
+        <span class="flabel">Deterioration signal</span>
+        <div class="toggle" id="tDecline"><div class="box"></div><span>Sustained decline only</span></div>
+        <div class="toggle" id="tProj"><div class="box"></div><span>Projected to reach Poor ≤ 2035</span></div>
+        <div class="toggle" id="tWork"><div class="box"></div><span>Recent work / rehab detected</span></div>
+      </div>
+
+      <div class="fgroup">
+        <span class="flabel">Traffic &amp; risk</span>
+        <div class="frow"><label>Min ADT</label><input type="number" id="minAdt" placeholder="0"></div>
+        <div class="toggle" id="tScour"><div class="box"></div><span>Scour-critical (code 0–3)</span></div>
+        <div class="toggle" id="tPosted"><div class="box"></div><span>Load-posted / restricted</span></div>
+      </div>
+
+      <div class="fgroup">
+        <span class="flabel">Structure</span>
+        <div class="frow"><label>Max span ≥ (m)</label><input type="number" id="minSpan" placeholder="0"></div>
+        <div class="frow"><label>Built before</label><input type="number" id="builtBefore" placeholder="year"></div>
+        <div class="toggle" id="tNoRecon"><div class="box"></div><span>Never reconstructed</span></div>
+      </div>
+
+      <button class="reset" id="reset">Clear all filters</button>
+    </aside>
+
+    <section id="center">
+      <div id="viewbar">
+        <button class="vtab on" data-view="list">Table</button>
+        <button class="vtab" data-view="map">Map</button>
+        <button class="vtab" data-view="overview">Overview</button>
+        <div class="spacer"></div>
+        <select class="sortsel" id="sort">
+          <option value="rate">Sort: fastest declining</option>
+          <option value="lowest">Sort: worst condition</option>
+          <option value="adt">Sort: highest traffic</option>
+          <option value="proj">Sort: soonest to Poor</option>
+          <option value="drops">Sort: most rating drops</option>
+          <option value="span">Sort: longest span</option>
+          <option value="year">Sort: oldest built</option>
+        </select>
+      </div>
+
+      <div id="view">
+        <div id="listwrap">
+          <table>
+            <thead><tr>
+              <th>Condition</th><th>Bridge</th><th>County</th>
+              <th>Deck / Super / Sub 2019→25</th><th>Rate</th>
+              <th>ADT</th><th>Built</th><th>To Poor</th>
+            </tr></thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+        <div id="map" style="display:none"></div>
+        <div id="overview"></div>
+      </div>
+      <div class="count-note" id="countNote"></div>
+    </section>
+
+    <aside id="detail"><div class="dpad" id="detailBody"></div></aside>
+  </main>
+</div>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+'use strict';
+
+/* ============ Reference tables (NBI 1995 coding guide) ============ */
+const OWNER={ '01':'State Highway Agency','02':'County Highway Agency','03':'Town/Township',
+ '04':'City/Municipal','11':'State Park/Forest','12':'Local Park/Forest','21':'Other State',
+ '25':'Other Local','26':'Private','27':'Railroad','31':'State Toll Authority',
+ '32':'Local Toll Authority','60':'Other Federal','61':'Indian Tribal Gov','62':'Bureau of Indian Affairs',
+ '63':'Bureau of Fish and Wildlife','64':'US Forest Service','66':'National Park Service',
+ '68':'Bureau of Land Mgmt','69':'Bureau of Reclamation','70':'Corps of Engineers (civil)',
+ '71':'Corps of Engineers (mil)','72':'Air Force','73':'Navy/Marines','74':'Army','75':'NASA',
+ '80':'Unknown' };
+const MAT={ '1':'Concrete','2':'Concrete continuous','3':'Steel','4':'Steel continuous',
+ '5':'Prestressed concrete','6':'Prestressed conc. continuous','7':'Timber','8':'Masonry',
+ '9':'Aluminum/Wrought iron','0':'Other' };
+const DESIGN={ '01':'Slab','02':'Stringer/Girder','03':'Girder & floorbeam','04':'Tee beam',
+ '05':'Box beam (multiple)','06':'Box beam (single)','07':'Frame','08':'Orthotropic','09':'Truss-deck',
+ '10':'Truss-thru','11':'Arch-deck','12':'Arch-thru','13':'Suspension','14':'Stayed girder',
+ '15':'Movable-lift','16':'Movable-bascule','17':'Movable-swing','18':'Tunnel','19':'Culvert',
+ '20':'Mixed','21':'Segmental box','22':'Channel beam','00':'Other' };
+const SCOUR={ '0':'Failed — closed','1':'Failed — action needed','2':'Unstable — scour','3':'Stable — action recommended',
+ '4':'Stable — countermeasures','5':'Stable within footing','6':'No eval — scour susceptible',
+ '7':'Countermeasures installed','8':'Stable — above footing','9':'On dry land / no waterway',
+ 'N':'Not over waterway','T':'Tidal — low risk','U':'Unknown' };
+const DECKTYPE={ '1':'Concrete cast-in-place','2':'Concrete precast','3':'Open grating',
+ '4':'Filled grating','5':'Closed grating','6':'Steel plate','7':'Corrugated steel',
+ '8':'Aluminum','9':'Timber','0':'Other','N':'Not applicable' };
+const SVC={ '1':'Highway','2':'Railroad','3':'Pedestrian','4':'Highway-railroad','5':'Highway-pedestrian',
+ '6':'Overpass structure','7':'Underpass','8':'Highway-waterway','0':'Other' };
+const COUNTY={ '001':'Alameda','003':'Alpine','005':'Amador','007':'Butte','009':'Calaveras',
+ '011':'Colusa','013':'Contra Costa','015':'Del Norte','017':'El Dorado','019':'Fresno',
+ '021':'Glenn','023':'Humboldt','025':'Imperial','027':'Inyo','029':'Kern','031':'Kings',
+ '033':'Lake','035':'Lassen','037':'Los Angeles','039':'Madera','041':'Marin','043':'Mariposa',
+ '045':'Mendocino','047':'Merced','049':'Modoc','051':'Mono','053':'Monterey','055':'Napa',
+ '057':'Nevada','059':'Orange','061':'Placer','063':'Plumas','065':'Riverside','067':'Sacramento',
+ '069':'San Benito','071':'San Bernardino','073':'San Diego','075':'San Francisco','077':'San Joaquin',
+ '079':'San Luis Obispo','081':'San Mateo','083':'Santa Barbara','085':'Santa Clara','087':'Santa Cruz',
+ '089':'Shasta','091':'Sierra','093':'Siskiyou','095':'Solano','097':'Sonoma','099':'Stanislaus',
+ '101':'Sutter','103':'Tehama','105':'Trinity','107':'Tulare','109':'Tuolumne','111':'Ventura',
+ '113':'Yolo','115':'Yuba' };
+const COMP_COLOR={deck:'#4ea1ff',super:'#d9a441',sub:'#e5534b',chan:'#3fb950',culv:'#a371f7'};
+const COMP_LABEL={deck:'Deck',super:'Superstructure',sub:'Substructure',chan:'Channel',culv:'Culvert'};
+
+/* ============ State ============ */
+let DATA=null, YEARS=[], ALL=[], FILTERED=[], selectedId=null;
+let map=null, markerLayer=null, curView='list';
+const F={ gfp:new Set(), decline:false, proj:false, work:false, scour:false, posted:false,
+          noRecon:false, minAdt:0, minSpan:0, builtBefore:0, search:'' };
+
+/* ============ Load ============ */
+fetch('ca_bridges.json').then(r=>{
+  if(!r.ok) throw new Error('data fetch failed');
+  return r.json();
+}).then(d=>{
+  DATA=d; YEARS=d.y; ALL=d.b;
+  document.getElementById('loader').style.display='none';
+  document.getElementById('app').style.display='flex';
+  initUI(); apply();
+}).catch(e=>{
+  document.getElementById('loadtxt').textContent='Could not load ca_bridges.json — make sure it sits next to index.html.';
+});
+
+/* ============ Helpers ============ */
+function gfpFull(g){return g==='G'?'Good':g==='F'?'Fair':g==='P'?'Poor':'Unknown';}
+function histArr(s){return s.split('').map(c=>c==='-'?null:+c);}
+function fmt(n){return n==null?'—':n.toLocaleString();}
+function strType(st){
+  if(!st||st.length<3) return '—';
+  const m=MAT[st[0]]||'?', d=DESIGN[st.slice(1)]||'?';
+  return m+' · '+d;
+}
+function county(co){return COUNTY[co]||co;}
+function rateClass(rt){ if(rt==null)return 'rate-flat'; if(rt<-0.05)return 'rate-neg'; if(rt>0.05)return 'rate-pos'; return 'rate-flat';}
+function rateStr(rt){ if(rt==null)return '—'; return (rt>0?'+':'')+rt.toFixed(2);}
+
+/* condition-colored mini sparkline (SVG) for 3 structural components */
+function sparkline(b,w=118,h=26){
+  const comps=['hd','hs','hb'];
+  const pad=3, iw=w-pad*2, ih=h-pad*2;
+  const n=YEARS.length;
+  const x=i=>pad + (n<=1?0:i/(n-1)*iw);
+  const y=v=>pad + (9-v)/9*ih; // rating 0..9 -> inverted
+  let paths='';
+  for(const c of comps){
+    const arr=histArr(b[c]);
+    let d='',started=false;
+    arr.forEach((v,i)=>{
+      if(v==null||v===0){started=false;return;}
+      d += (started?'L':'M') + x(i).toFixed(1)+','+y(v).toFixed(1)+' ';
+      started=true;
+    });
+    if(d) paths+=`<path d="${d}" fill="none" stroke="${COMP_COLOR[c==='hd'?'deck':c==='hs'?'super':'sub']}" stroke-width="1.4" opacity="0.9"/>`;
+  }
+  // poor threshold line at 4
+  const ty=y(4).toFixed(1);
+  return `<svg class="spark" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+    <line x1="${pad}" y1="${ty}" x2="${w-pad}" y2="${ty}" stroke="#e5534b" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.4"/>
+    ${paths}</svg>`;
+}
+
+/* large detail sparkline with axis + all components */
+function bigSpark(b){
+  const w=364,h=120,padL=22,padR=8,padT=10,padB=18;
+  const iw=w-padL-padR, ih=h-padT-padB, n=YEARS.length;
+  const x=i=>padL+(n<=1?0:i/(n-1)*iw);
+  const y=v=>padT+(9-v)/9*ih;
+  let grid='';
+  for(let v=0;v<=9;v+=3){ grid+=`<line x1="${padL}" y1="${y(v)}" x2="${w-padR}" y2="${y(v)}" stroke="#2a333f" stroke-width="0.5"/><text x="4" y="${y(v)+3}" fill="#63707d" font-size="9" font-family="monospace">${v}</text>`;}
+  // poor line
+  grid+=`<line x1="${padL}" y1="${y(4)}" x2="${w-padR}" y2="${y(4)}" stroke="#e5534b" stroke-width="0.8" stroke-dasharray="3,3" opacity="0.6"/>`;
+  let xlab='';
+  YEARS.forEach((yr,i)=>{ if(i%2===0||i===n-1) xlab+=`<text x="${x(i)}" y="${h-5}" fill="#63707d" font-size="8.5" font-family="monospace" text-anchor="middle">'${String(yr).slice(2)}</text>`;});
+  let paths='',dots='';
+  for(const [key,c] of [['hd','deck'],['hs','super'],['hb','sub'],['hc','chan'],['hv','culv']]){
+    const arr=histArr(b[key]);
+    if(arr.every(v=>v==null||v===0)) continue;
+    let d='',started=false;
+    arr.forEach((v,i)=>{
+      if(v==null||v===0){started=false;return;}
+      d+=(started?'L':'M')+x(i).toFixed(1)+','+y(v).toFixed(1)+' ';
+      dots+=`<circle cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="2" fill="${COMP_COLOR[c]}"/>`;
+      started=true;
+    });
+    if(d) paths+=`<path d="${d}" fill="none" stroke="${COMP_COLOR[c]}" stroke-width="1.8"/>`;
+  }
+  return `<svg class="bigspark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">${grid}${xlab}${paths}${dots}</svg>`;
+}
+
+/* ============ Filtering ============ */
+function apply(){
+  const s=F.search.toLowerCase().trim();
+  FILTERED=ALL.filter(b=>{
+    if(F.gfp.size && !F.gfp.has(gfpFull(b.g))) return false;
+    if(F.decline && !(b.rt!=null && b.rt<-0.1 && b.dr===0 && b.dd>=2)) return false;
+    if(F.proj && !(b.dp!=null && b.dp<=2035)) return false;
+    if(F.work && b.w!==1) return false;
+    if(F.scour && !['0','1','2','3'].includes(b.sc)) return false;
+    if(F.posted && !['0','1','2','3','4'].includes(b.po)) return false;
+    if(F.noRecon && b.yr) return false;
+    if(F.minAdt && (b.a||0)<F.minAdt) return false;
+    if(F.minSpan && (b.ms||0)<F.minSpan) return false;
+    if(F.builtBefore && (b.yb==null || b.yb>=F.builtBefore)) return false;
+    if(s){
+      const hay=(b.f+' '+b.c+' '+b.i+' '+county(b.co)+' '+b.co).toLowerCase();
+      if(!hay.includes(s)) return false;
+    }
+    return true;
+  });
+  sortData();
+  render();
+}
+function sortData(){
+  const k=document.getElementById('sort').value;
+  const cmp={
+    rate:(a,b)=>(a.rt==null?99:a.rt)-(b.rt==null?99:b.rt),
+    lowest:(a,b)=>(a.lw==null?99:a.lw)-(b.lw==null?99:b.lw),
+    adt:(a,b)=>(b.a||0)-(a.a||0),
+    proj:(a,b)=>(a.dp||9999)-(b.dp||9999),
+    drops:(a,b)=>(b.dd||0)-(a.dd||0),
+    span:(a,b)=>(b.ms||0)-(a.ms||0),
+    year:(a,b)=>(a.yb||9999)-(b.yb||9999),
+  }[k];
+  FILTERED.sort(cmp);
+}
+
+/* ============ Render ============ */
+function render(){
+  document.getElementById('status').innerHTML=`<b>${fmt(FILTERED.length)}</b> of ${fmt(ALL.length)} bridges`;
+  const note=document.getElementById('countNote');
+  if(curView==='list') renderTable();
+  else if(curView==='map') renderMap();
+  else renderOverview();
+  // count note
+  const dcl=FILTERED.filter(b=>b.rt!=null&&b.rt<-0.1&&b.dr===0&&b.dd>=2).length;
+  const poor=FILTERED.filter(b=>b.g==='P').length;
+  note.textContent=`Showing ${fmt(FILTERED.length)} bridges · ${fmt(poor)} in Poor condition · ${fmt(dcl)} in sustained decline`;
+}
+
+function renderTable(){
+  const tb=document.getElementById('tbody');
+  const rows=FILTERED.slice(0,600);
+  tb.innerHTML=rows.map(b=>{
+    const g=gfpFull(b.g);
+    return `<tr data-id="${b.i}" class="${b.i===selectedId?'sel':''}">
+      <td><span class="gtag g-${g}"></span><span class="badge-lo mono">${b.lw==null?'—':b.lw}</span></td>
+      <td class="namecell"><div>${esc(b.f)||'—'}${b.w?'<span class="wtag">rehab</span>':''}</div><div class="carries">${esc(b.c)||''}</div></td>
+      <td>${county(b.co)}</td>
+      <td>${sparkline(b)}</td>
+      <td class="ratecell ${rateClass(b.rt)} mono">${rateStr(b.rt)}</td>
+      <td class="mono">${fmt(b.a)}</td>
+      <td class="mono">${b.yb||'—'}</td>
+      <td class="mono">${b.dp||'—'}</td>
+    </tr>`;
+  }).join('');
+  if(FILTERED.length>600){
+    tb.innerHTML+=`<tr><td colspan="8" style="text-align:center;color:var(--ink-3);padding:14px">Showing first 600 of ${fmt(FILTERED.length)}. Narrow filters or use Map view to see all.</td></tr>`;
+  }
+  tb.querySelectorAll('tr[data-id]').forEach(tr=>tr.onclick=()=>openDetail(tr.dataset.id));
+}
+
+/* ============ Map ============ */
+function ensureMap(){
+  if(map) return true;
+  if(typeof L==='undefined'){
+    document.getElementById('map').innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--ink-3);text-align:center;padding:40px;font-size:13px">Map library (Leaflet) could not load.<br>Check your network connection, then reopen the Map tab.<br><br>The Table and Overview views work without it.</div>';
+    return false;
+  }
+  map=L.map('map',{preferCanvas:true,zoomControl:true}).setView([37.3,-119.4],6);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
+    attribution:'&copy; OpenStreetMap &copy; CARTO',maxZoom:19,subdomains:'abcd'
+  }).addTo(map);
+  markerLayer=L.layerGroup().addTo(map);
+  const legend=L.control({position:'bottomright'});
+  legend.onAdd=function(){
+    const d=L.DomUtil.create('div','mlegend');
+    d.innerHTML=`<div style="font-weight:600;color:var(--ink);margin-bottom:4px">Condition</div>
+      <div class="row"><span class="dot" style="background:#3fb950"></span>Good (7–9)</div>
+      <div class="row"><span class="dot" style="background:#d9a441"></span>Fair (5–6)</div>
+      <div class="row"><span class="dot" style="background:#e5534b"></span>Poor (≤4)</div>
+      <div class="row" style="margin-top:5px;color:var(--ink-3)">Ring = sustained decline</div>`;
+    return d;
+  };
+  legend.addTo(map);
+}
+function renderMap(){
+  if(!ensureMap()) return;
+  markerLayer.clearLayers();
+  setTimeout(()=>map.invalidateSize(),50);
+  const pts=FILTERED.filter(b=>b.la&&b.lo);
+  const cap=pts.slice(0,12000); // perf cap
+  cap.forEach(b=>{
+    const g=gfpFull(b.g);
+    const col=g==='Good'?'#3fb950':g==='Fair'?'#d9a441':g==='Poor'?'#e5534b':'#5a6572';
+    const declining=b.rt!=null&&b.rt<-0.1&&b.dr===0&&b.dd>=2;
+    const m=L.circleMarker([b.la,b.lo],{
+      radius: b.a>50000?6: b.a>10000?4.5:3.2,
+      fillColor:col, color: declining?'#4ea1ff':col,
+      weight: declining?2:0.5, opacity:1, fillOpacity:0.78
+    });
+    m.on('click',()=>openDetail(b.i));
+    m.bindTooltip(`${esc(b.f)||b.i} — ${g} (${b.lw==null?'?':b.lw})`,{direction:'top'});
+    markerLayer.addLayer(m);
+  });
+}
+
+/* ============ Overview ============ */
+function renderOverview(){
+  const el=document.getElementById('overview');
+  const set=FILTERED;
+  const n=set.length;
+  const poor=set.filter(b=>b.g==='P').length;
+  const fair=set.filter(b=>b.g==='F').length;
+  const good=set.filter(b=>b.g==='G').length;
+  const decl=set.filter(b=>b.rt!=null&&b.rt<-0.1&&b.dr===0&&b.dd>=2).length;
+  const soon=set.filter(b=>b.dp!=null&&b.dp<=2030).length;
+  const scour=set.filter(b=>['0','1','2','3'].includes(b.sc)).length;
+  const work=set.filter(b=>b.w===1).length;
+  const avgAge=(()=>{const a=set.filter(b=>b.yb).map(b=>2025-b.yb);return a.length?Math.round(a.reduce((x,y)=>x+y,0)/a.length):'—';})();
+
+  // county distribution of poor+declining
+  const cmap={};
+  set.filter(b=>b.g==='P'||(b.rt!=null&&b.rt<-0.1&&b.dr===0&&b.dd>=2)).forEach(b=>{
+    const c=county(b.co); cmap[c]=(cmap[c]||0)+1;
+  });
+  const topC=Object.entries(cmap).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  const maxC=topC.length?topC[0][1]:1;
+
+  // year-built decade histogram
+  const dec={};
+  set.filter(b=>b.yb).forEach(b=>{const d=Math.floor(b.yb/10)*10; dec[d]=(dec[d]||0)+1;});
+  const decs=Object.keys(dec).map(Number).sort((a,b)=>a-b);
+  const maxD=Math.max(...Object.values(dec),1);
+
+  el.innerHTML=`
+   <div class="ovgrid">
+     <div class="stat poor"><div class="num">${fmt(poor)}</div><div class="lbl">Poor condition</div><div class="note">lowest component ≤ 4</div></div>
+     <div class="stat accent"><div class="num">${fmt(decl)}</div><div class="lbl">Sustained decline</div><div class="note">≥2 drops, no recovery, 7-yr</div></div>
+     <div class="stat poor"><div class="num">${fmt(soon)}</div><div class="lbl">Projected Poor by 2030</div><div class="note">at current deterioration rate</div></div>
+     <div class="stat"><div class="num">${fmt(scour)}</div><div class="lbl">Scour-critical</div><div class="note">code 0–3</div></div>
+     <div class="stat accent"><div class="num">${fmt(work)}</div><div class="lbl">Recent rehab detected</div><div class="note">rating jump ≥2 in series</div></div>
+     <div class="stat"><div class="num">${avgAge}</div><div class="lbl">Average age (yrs)</div><div class="note">${fmt(n)} bridges in view</div></div>
+   </div>
+
+   <div class="ovsection">
+     <h2>Condition mix</h2>
+     ${distBar('Good (7–9)',good,n,'#3fb950')}
+     ${distBar('Fair (5–6)',fair,n,'#d9a441')}
+     ${distBar('Poor (≤4)',poor,n,'#e5534b')}
+   </div>
+
+   <div class="ovsection">
+     <h2>Where the risk concentrates — top counties by Poor + declining bridges</h2>
+     ${topC.map(([c,v])=>`<div class="distrow"><div class="dlabel">${c}</div><div class="dbar"><div class="dfill" style="width:${v/maxC*100}%;background:var(--signal)"></div></div><div class="dval">${v}</div></div>`).join('')||'<div style="color:var(--ink-3)">No poor or declining bridges in current view.</div>'}
+   </div>
+
+   <div class="ovsection">
+     <h2>Inventory by decade built</h2>
+     ${decs.map(d=>`<div class="distrow"><div class="dlabel mono">${d}s</div><div class="dbar"><div class="dfill" style="width:${dec[d]/maxD*100}%;background:var(--panel-2);border-right:2px solid var(--ink-3)"></div></div><div class="dval">${fmt(dec[d])}</div></div>`).join('')}
+   </div>
+  `;
+}
+function distBar(label,v,total,col){
+  const pct=total?(v/total*100):0;
+  return `<div class="distrow"><div class="dlabel">${label}</div><div class="dbar"><div class="dfill" style="width:${pct}%;background:${col}"></div></div><div class="dval">${fmt(v)} · ${pct.toFixed(1)}%</div></div>`;
+}
+
+/* ============ Detail ============ */
+function openDetail(id){
+  const b=ALL.find(x=>x.i===id); if(!b)return;
+  selectedId=id;
+  document.querySelectorAll('tr[data-id]').forEach(tr=>tr.classList.toggle('sel',tr.dataset.id===id));
+  const d=document.getElementById('detail'); d.classList.add('open');
+  const g=gfpFull(b.g);
+  const decl=b.rt!=null&&b.rt<-0.1&&b.dr===0&&b.dd>=2;
+
+  // verdict
+  let verdict;
+  if(b.w===1 && (b.rt==null||b.rt>=-0.05)){
+    verdict=`<div class="verdict work"><b>Recently rehabilitated.</b> A rating jump in the 7-year series indicates deck/structural work. Condition trajectory has recovered or stabilized.</div>`;
+  } else if(decl && b.lw!=null && b.lw<=4){
+    verdict=`<div class="verdict crit"><b>Critical + declining.</b> Already Poor and still falling (${b.dcp} at ${rateStr(b.rt)}/yr over 7 years). Strong ABC replacement candidate.</div>`;
+  } else if(decl){
+    verdict=`<div class="verdict crit"><b>Sustained decline.</b> ${COMP_LABEL[b.dcp]||b.dcp} falling ${rateStr(b.rt)}/yr with no recovery${b.dp?`, projected to reach Poor by <b>${b.dp}</b>`:''}. Act before it becomes an emergency.</div>`;
+  } else if(b.lw!=null && b.lw<=4){
+    verdict=`<div class="verdict watch"><b>Poor but stable.</b> Low condition (${b.lw}) but not currently declining in the record. Candidate for preservation or scheduled replacement.</div>`;
+  } else {
+    verdict=`<div class="verdict stable"><b>Stable.</b> No sustained deterioration detected across 2019–2025. Routine monitoring.</div>`;
+  }
+
+  const spanFt=b.ms?(b.ms*3.281).toFixed(0):null;
+  const lenFt=b.L?(b.L*3.281).toFixed(0):null;
+
+  document.getElementById('detailBody').innerHTML=`
+    <span class="dclose" onclick="closeDetail()">×</span>
+    <div class="dtitle">${esc(b.f)||'Unnamed structure'}</div>
+    <div class="dsub">Carries ${esc(b.c)||'—'} · ${county(b.co)} County · ID ${esc(b.i)}</div>
+    ${verdict}
+    <div class="dsection">
+      <h3>Condition history 2019–2025</h3>
+      ${bigSpark(b)}
+      <div class="comp-legend">
+        ${['deck','super','sub','chan','culv'].map(c=>`<div class="li"><span class="sw" style="background:${COMP_COLOR[c]}"></span>${COMP_LABEL[c]}</div>`).join('')}
+      </div>
+    </div>
+    <div class="dsection">
+      <h3>Deterioration analysis</h3>
+      <div class="kv"><span class="k">Lowest component (2025)</span><span class="v"><span class="gtag g-${g}"></span>${b.lw==null?'—':b.lw} · ${g}</span></div>
+      <div class="kv"><span class="k">Controlling decline</span><span class="v">${b.dcp?COMP_LABEL[b.dcp]:'—'}</span></div>
+      <div class="kv"><span class="k">Rate (7-yr fit)</span><span class="v ${rateClass(b.rt)}">${rateStr(b.rt)} /yr</span></div>
+      <div class="kv"><span class="k">Rating drops · recoveries</span><span class="v">${b.dd} · ${b.dr}</span></div>
+      <div class="kv"><span class="k">Net change 2019→25</span><span class="v">${b.dn==null?'—':(b.dn>0?'+':'')+b.dn}</span></div>
+      <div class="kv"><span class="k">Projected year to Poor</span><span class="v">${b.dp||'—'}</span></div>
+    </div>
+    <div class="dsection">
+      <h3>Structure</h3>
+      <div class="kv"><span class="k">Type</span><span class="v">${strType(b.st)}</span></div>
+      <div class="kv"><span class="k">Service</span><span class="v">${SVC[b.sv&&b.sv[0]]||'—'}</span></div>
+      <div class="kv"><span class="k">Deck type</span><span class="v">${DECKTYPE[b.dt]||'—'}</span></div>
+      <div class="kv"><span class="k">Spans (main)</span><span class="v">${b.ns||'—'}</span></div>
+      <div class="kv"><span class="k">Max span</span><span class="v">${b.ms?b.ms+' m ('+spanFt+' ft)':'—'}</span></div>
+      <div class="kv"><span class="k">Total length</span><span class="v">${b.L?b.L+' m ('+lenFt+' ft)':'—'}</span></div>
+      <div class="kv"><span class="k">Deck width</span><span class="v">${b.dw?b.dw+' m':'—'}</span></div>
+      <div class="kv"><span class="k">Skew</span><span class="v">${b.sk!=null?b.sk+'°':'—'}</span></div>
+    </div>
+    <div class="dsection">
+      <h3>Age &amp; work</h3>
+      <div class="kv"><span class="k">Year built</span><span class="v">${b.yb||'—'}</span></div>
+      <div class="kv"><span class="k">Year reconstructed</span><span class="v">${b.yr||'never'}</span></div>
+      <div class="kv"><span class="k">Age (2025)</span><span class="v">${b.yb?2025-b.yb+' yrs':'—'}</span></div>
+      <div class="kv"><span class="k">Recent rehab in record</span><span class="v">${b.w?'Yes — rating jump':'No'}</span></div>
+    </div>
+    <div class="dsection">
+      <h3>Traffic, rating &amp; risk</h3>
+      <div class="kv"><span class="k">ADT</span><span class="v">${fmt(b.a)}</span></div>
+      <div class="kv"><span class="k">Truck %</span><span class="v">${b.at!=null?b.at+'%':'—'}</span></div>
+      <div class="kv"><span class="k">Owner</span><span class="v">${OWNER[b.o]||b.o||'—'}</span></div>
+      <div class="kv"><span class="k">Operating rating</span><span class="v">${b.opr!=null?(b.opr/10).toFixed(1)+' t':'—'}</span></div>
+      <div class="kv"><span class="k">Inventory rating</span><span class="v">${b.ivr!=null?(b.ivr/10).toFixed(1)+' t':'—'}</span></div>
+      <div class="kv"><span class="k">Scour (Item 113)</span><span class="v">${b.sc} · ${SCOUR[b.sc]||'—'}</span></div>
+    </div>
+    <div class="dsection">
+      <h3>Location</h3>
+      <div class="kv"><span class="k">Coordinates</span><span class="v">${b.la&&b.lo?b.la.toFixed(4)+', '+b.lo.toFixed(4):'—'}</span></div>
+      <div class="kv"><span class="k">Description</span><span class="v" style="max-width:200px">${esc(b.f)}</span></div>
+      ${b.la&&b.lo?`<div style="margin-top:8px"><a href="https://www.google.com/maps/search/?api=1&query=${b.la},${b.lo}" target="_blank" rel="noopener" style="color:var(--signal);font-size:12px;text-decoration:none">Open in Google Maps →</a></div>`:''}
+    </div>
+  `;
+}
+function closeDetail(){document.getElementById('detail').classList.remove('open');selectedId=null;
+  document.querySelectorAll('tr.sel').forEach(t=>t.classList.remove('sel'));}
+
+function esc(s){return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+/* ============ UI wiring ============ */
+function initUI(){
+  document.getElementById('gfpChips').querySelectorAll('.chip').forEach(ch=>{
+    ch.onclick=()=>{const g=ch.dataset.g; ch.classList.toggle('on');
+      if(F.gfp.has(g))F.gfp.delete(g);else F.gfp.add(g); apply();};
+  });
+  const tog=(id,key)=>{const el=document.getElementById(id);
+    el.onclick=()=>{el.classList.toggle('on');F[key]=el.classList.contains('on');apply();};};
+  tog('tDecline','decline');tog('tProj','proj');tog('tWork','work');
+  tog('tScour','scour');tog('tPosted','posted');tog('tNoRecon','noRecon');
+  document.getElementById('minAdt').oninput=e=>{F.minAdt=+e.target.value||0;apply();};
+  document.getElementById('minSpan').oninput=e=>{F.minSpan=+e.target.value||0;apply();};
+  document.getElementById('builtBefore').oninput=e=>{F.builtBefore=+e.target.value||0;apply();};
+  let st; document.getElementById('search').oninput=e=>{clearTimeout(st);st=setTimeout(()=>{F.search=e.target.value;apply();},180);};
+  document.getElementById('sort').onchange=()=>{sortData();render();};
+  document.getElementById('reset').onclick=()=>{
+    F.gfp.clear();['decline','proj','work','scour','posted','noRecon'].forEach(k=>F[k]=false);
+    F.minAdt=F.minSpan=F.builtBefore=0;F.search='';
+    document.querySelectorAll('.chip.on,.toggle.on').forEach(e=>e.classList.remove('on'));
+    document.getElementById('minAdt').value='';document.getElementById('minSpan').value='';
+    document.getElementById('builtBefore').value='';document.getElementById('search').value='';
+    apply();
+  };
+  document.querySelectorAll('.vtab').forEach(t=>{
+    t.onclick=()=>{
+      document.querySelectorAll('.vtab').forEach(x=>x.classList.remove('on'));
+      t.classList.add('on'); curView=t.dataset.view;
+      document.getElementById('listwrap').style.display=curView==='list'?'block':'none';
+      document.getElementById('map').style.display=curView==='map'?'block':'none';
+      document.getElementById('overview').style.display=curView==='overview'?'block':'none';
+      render();
+    };
+  });
+}
+</script>
+</body>
+</html>
